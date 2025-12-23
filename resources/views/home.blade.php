@@ -24,6 +24,17 @@
             for any other purpose. For additional details regarding site usage and data collection, please review
             our <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.
         </p>
+        @if(session('success'))
+            <div class="mb-4 inline-flex items-center rounded border border-green-200 bg-green-50 px-4 py-2 text-green-800 text-sm">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if($errors->has('status'))
+            <div class="mb-4 inline-flex items-center rounded border border-red-200 bg-red-50 px-4 py-2 text-red-800 text-sm">
+                {{ $errors->first('status') }}
+            </div>
+        @endif
 
         @php
             /**
@@ -146,19 +157,71 @@
                                 @if(auth()->check() && auth()->user()->profile_confirmed)
                                     @php
                                         $status = $retreatRsvpStatuses[$retreat->id] ?? null;
-                                        $hasActiveRsvp = in_array($status, ['going', 'waitlist']);
+                                        $goingCount = $retreat->users()
+                                            ->wherePivot('status', 'going')
+                                            ->count();
+                                        $hasCapacity = is_null($retreat->capacity) || $goingCount < $retreat->capacity;
                                     @endphp
+                                    @if($status === 'going')
+                                        <span class="inline-flex items-center justify-center rounded-md border border-green-200 bg-green-100 px-3 py-1.5 text-[11px] font-medium text-green-800">
+                                            RSVP’d (Going)
+                                        </span>
+                                        <form method="POST" action="{{ route('retreats.rsvp.update', $retreat) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="cancelled">
+                                            <button
+                                                type="submit"
+                                                class="inline-flex items-center justify-center rounded-md border border-red-600
+                                                       bg-red-600 px-3 py-1.5 text-[11px] font-medium text-white
+                                                       hover:bg-red-700 hover:border-red-700 transition"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </form>
+                                    @elseif($status === 'waitlist')
+                                        <span class="inline-flex items-center justify-center rounded-md border border-amber-200 bg-amber-100 px-3 py-1.5 text-[11px] font-medium text-amber-800">
+                                            RSVP’d (Waitlist)
+                                        </span>
 
-                                    @if($hasActiveRsvp)
-                                        <button
-                                            type="button"
-                                            disabled
-                                            class="inline-flex items-center justify-center rounded-md border border-gray-300
-                                                   bg-gray-300 px-3 py-1.5 text-[11px] font-medium text-gray-700
-                                                   cursor-not-allowed"
-                                        >
-                                            RSVP’d ({{ ucfirst($status) }})
-                                        </button>
+                                        @if($hasCapacity)
+                                            <form method="POST" action="{{ route('retreats.rsvp.update', $retreat) }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="going">
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex items-center justify-center rounded-md border border-blue-600
+                                                           bg-blue-600 px-3 py-1.5 text-[11px] font-medium text-white
+                                                           hover:bg-blue-700 hover:border-blue-700 transition"
+                                                >
+                                                    Claim Spot
+                                                </button>
+                                            </form>
+                                        @else
+                                            <button
+                                                type="button"
+                                                disabled
+                                                class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-gray-200 px-3 py-1.5 text-[11px] font-medium text-gray-700 cursor-not-allowed"
+                                            >
+                                                Waiting for an open spot
+                                            </button>
+                                        @endif
+
+                                        <form method="POST" action="{{ route('retreats.rsvp.update', $retreat) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="cancelled">
+                                            <button
+                                                type="submit"
+                                                class="inline-flex items-center justify-center rounded-md border border-red-600
+                                                       bg-red-600 px-3 py-1.5 text-[11px] font-medium text-white
+                                                       hover:bg-red-700 hover:border-red-700 transition"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </form>
+
                                     @else
                                         <form method="POST" action="{{ route('retreats.rsvp.store', $retreat) }}">
                                             @csrf
@@ -268,19 +331,71 @@
                                 @if(auth()->check() && auth()->user()->profile_confirmed)
                                     @php
                                         $status = $eventRsvpStatuses[$event->id] ?? null;
-                                        $hasActiveRsvp = in_array($status, ['going', 'waitlist']);
+                                        $goingCount = $event->users()
+                                            ->wherePivot('status', 'going')
+                                            ->count();
+                                        $hasCapacity = is_null($event->capacity) || $goingCount < $event->capacity;
                                     @endphp
+                                    @if($status === 'going')
+                                        <span class="inline-flex items-center justify-center rounded-md border border-green-200 bg-green-100 px-3 py-1.5 text-[11px] font-medium text-green-800">
+                                            RSVP’d (Going)
+                                        </span>
+                                        <form method="POST" action="{{ route('events.rsvp.update', $event) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="cancelled">
+                                            <button
+                                                type="submit"
+                                                class="inline-flex items-center justify-center rounded-md border border-red-600
+                                                       bg-red-600 px-3 py-1.5 text-[11px] font-medium text-white
+                                                       hover:bg-red-700 hover:border-red-700 transition"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </form>
+                                    @elseif($status === 'waitlist')
+                                        <span class="inline-flex items-center justify-center rounded-md border border-amber-200 bg-amber-100 px-3 py-1.5 text-[11px] font-medium text-amber-800">
+                                            RSVP’d (Waitlist)
+                                        </span>
 
-                                    @if($hasActiveRsvp)
-                                        <button
-                                            type="button"
-                                            disabled
-                                            class="inline-flex items-center justify-center rounded-md border border-gray-300
-                                                   bg-gray-300 px-3 py-1.5 text-[11px] font-medium text-gray-700
-                                                   cursor-not-allowed"
-                                        >
-                                            RSVP’d ({{ ucfirst($status) }})
-                                        </button>
+                                        @if($hasCapacity)
+                                            <form method="POST" action="{{ route('events.rsvp.update', $event) }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="going">
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex items-center justify-center rounded-md border border-blue-600
+                                                           bg-blue-600 px-3 py-1.5 text-[11px] font-medium text-white
+                                                           hover:bg-blue-700 hover:border-blue-700 transition"
+                                                >
+                                                    Claim Spot
+                                                </button>
+                                            </form>
+                                        @else
+                                            <button
+                                                type="button"
+                                                disabled
+                                                class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-gray-200 px-3 py-1.5 text-[11px] font-medium text-gray-700 cursor-not-allowed"
+                                            >
+                                                Waiting for an open spot
+                                            </button>
+                                        @endif
+
+                                        <form method="POST" action="{{ route('events.rsvp.update', $event) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="cancelled">
+                                            <button
+                                                type="submit"
+                                                class="inline-flex items-center justify-center rounded-md border border-red-600
+                                                       bg-red-600 px-3 py-1.5 text-[11px] font-medium text-white
+                                                       hover:bg-red-700 hover:border-red-700 transition"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </form>
+
                                     @else
                                         <form method="POST" action="{{ route('events.rsvp.store', $event) }}">
                                             @csrf

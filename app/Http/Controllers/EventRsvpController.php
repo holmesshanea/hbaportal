@@ -48,10 +48,29 @@ class EventRsvpController extends Controller
         if (! $event->users()->where('user_id', $userId)->exists()) {
             abort(403, 'You have not RSVP’d for this event.');
         }
+        $currentPivot = $event->users()->where('user_id', $userId)->first()->pivot;
 
-        // 🔑 THIS IS THE LINE YOU ASKED ABOUT
+        // Enforce capacity when trying to switch to "going"
+        if ($data['status'] === 'going' && ! is_null($event->capacity)) {
+            $currentGoingCount = $event->users()
+                ->wherePivot('status', 'going')
+                ->count();
+
+            // If the user is already marked as going, exclude them from the count
+            if ($currentPivot->status === 'going') {
+                $currentGoingCount -= 1;
+            }
+
+            if ($currentGoingCount >= $event->capacity) {
+                return back()->withErrors([
+                    'status' => 'This event is currently full. You remain on the waitlist.',
+                ]);
+            }
+        }
+
         $event->users()->updateExistingPivot($userId, [
-            'status' => $data['status'],
+            'status'    => $data['status'],
+            'rsvped_at' => now(),
         ]);
 
         return back()->with('success', 'Your RSVP has been updated.');

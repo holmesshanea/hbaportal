@@ -47,10 +47,29 @@ class RetreatRsvpController extends Controller
         if (! $retreat->users()->where('user_id', $userId)->exists()) {
             abort(403, 'You have not RSVP’d for this retreat.');
         }
+        $currentPivot = $retreat->users()->where('user_id', $userId)->first()->pivot;
 
-        // 🔑 THIS IS THE LINE YOU ASKED ABOUT
+        // Enforce capacity when trying to switch to "going"
+        if ($data['status'] === 'going' && ! is_null($retreat->capacity)) {
+            $currentGoingCount = $retreat->users()
+                ->wherePivot('status', 'going')
+                ->count();
+
+            // If the user is already marked as going, exclude them from the count
+            if ($currentPivot->status === 'going') {
+                $currentGoingCount -= 1;
+            }
+
+            if ($currentGoingCount >= $retreat->capacity) {
+                return back()->withErrors([
+                    'status' => 'This retreat is currently full. You remain on the waitlist.',
+                ]);
+            }
+        }
+
         $retreat->users()->updateExistingPivot($userId, [
-            'status' => $data['status'],
+            'status'    => $data['status'],
+            'rsvped_at' => now(),
         ]);
 
         return back()->with('success', 'Your RSVP has been updated.');

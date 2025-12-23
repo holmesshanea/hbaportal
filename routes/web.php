@@ -18,6 +18,7 @@ Route::get('/retreats/{retreat}', [RetreatController::class, 'show'])->name('ret
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
 
 // Static info pages
+Route::view('/code', 'code')->name('code');
 Route::view('/faq', 'faq')->name('faq');
 Route::view('/terms', 'terms')->name('terms');
 Route::view('/privacy', 'privacy')->name('privacy');
