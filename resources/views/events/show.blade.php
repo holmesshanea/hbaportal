@@ -16,11 +16,9 @@
                             <th class="px-3 py-2 text-left font-semibold">Image</th>
                             <td class="px-3 py-2">
                                 <div class="flex flex-col gap-2">
-                                    <img
-                                        src="{{ asset('storage/' . $event->image) }}"
-                                        alt="Event image"
-                                        class="max-w-xs rounded border"
-                                    >
+                                    <img src="{{ asset('storage/' . $event->image) }}"
+                                         alt="Event image"
+                                         class="max-w-xs rounded border">
                                 </div>
                             </td>
                         </tr>
@@ -64,13 +62,18 @@
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
-                        <th class="px-3 py-2 text-left font-semibold">Date</th>
-                        <td class="px-3 py-2">{{ $event->date }}</td>
+                        <th class="px-3 py-2 text-left font-semibold">Start Date</th>
+                        <td class="px-3 py-2">{{ $event->start_date }}</td>
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold">Start Time</th>
                         <td class="px-3 py-2">{{ $event->start_time }}</td>
+                    </tr>
+
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="px-3 py-2 text-left font-semibold">End Date</th>
+                        <td class="px-3 py-2">{{ $event->end_date }}</td>
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
@@ -100,18 +103,19 @@
                 </div>
             @endif
 
+
             <div class="mt-4 flex items-center gap-2">
 
                 {{-- OK / Return Home --}}
                 <a
                     href="{{ route('home') }}"
                     class="inline-flex items-center px-4 py-2 rounded border
-                           bg-[oklch(58.8%_0.158_241.966)]
-                           border-[oklch(58.8%_0.158_241.966)]
-                           text-white
-                           hover:bg-[oklch(52%_0.158_241.966)]
-                           hover:border-[oklch(52%_0.158_241.966)]
-                           transition"
+               bg-[oklch(58.8%_0.158_241.966)]
+               border-[oklch(58.8%_0.158_241.966)]
+               text-white
+               hover:bg-[oklch(52%_0.158_241.966)]
+               hover:border-[oklch(52%_0.158_241.966)]
+               transition"
                 >
                     OK / Return Home
                 </a>
@@ -129,11 +133,14 @@
                             ?->status;
 
                         // Consider these as "already RSVP’d" (button should be disabled)
-                       $goingCount = $event->users()
+                        //$hasActiveRsvp = in_array($rsvpStatus, ['going', 'waitlist']);
+
+                    $goingCount = $event->users()
                             ->wherePivot('status', 'going')
                             ->count();
 
                         $hasCapacity = is_null($event->capacity) || $goingCount < $event->capacity;
+
                     @endphp
                     @if($rsvpStatus === 'going')
                         <span class="inline-flex items-center px-4 py-2 rounded bg-green-100 text-green-800 border border-green-200 text-sm">
@@ -200,9 +207,7 @@
                             @csrf
                             <button
                                 type="submit"
-                                class="inline-flex items-center px-4 py-2 rounded
-                                       bg-green-600 text-white border border-green-600
-                                       hover:bg-green-700 hover:border-green-700 transition"
+                                class="inline-flex items-center px-4 py-2 rounded"
                             >
                                 RSVP
                             </button>

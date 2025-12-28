@@ -5,7 +5,7 @@
 @section('content')
     <section class="bg-white dark:bg-[#161615] dark:text-[#EDEDEC] rounded-lg p-6 lg:p-10 text-[13px] leading-[20px]">
         <div class="max-w-2xl mx-auto">
-            <h1 class="text-base font-semibold mb-4">Event Details</h1>
+            <h1 class="text-base font-semibold mb-4">event Details</h1>
 
             <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden text-xs">
                 <table class="min-w-full">
@@ -13,6 +13,11 @@
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold w-32">ID</th>
                         <td class="px-3 py-2">{{ $event->id }}</td>
+                    </tr>
+
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="px-3 py-2 text-left font-semibold">Event Type</th>
+                        <td class="px-3 py-2">{{ ucfirst($event->event_type ?? 'retreat') }}</td>
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
@@ -31,13 +36,18 @@
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
-                        <th class="px-3 py-2 text-left font-semibold">Date</th>
-                        <td class="px-3 py-2">{{ $event->date }}</td>
+                        <th class="px-3 py-2 text-left font-semibold">Start Date</th>
+                        <td class="px-3 py-2">{{ $event->start_date }}</td>
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold">Start Time</th>
                         <td class="px-3 py-2">{{ $event->start_time }}</td>
+                    </tr>
+
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="px-3 py-2 text-left font-semibold">End Date</th>
+                        <td class="px-3 py-2">{{ $event->end_date }}</td>
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
@@ -55,15 +65,17 @@
                             <th class="px-3 py-2 text-left font-semibold">Image</th>
                             <td class="px-3 py-2">
                                 <div class="flex flex-col gap-2">
-                                    <img src="{{ asset('storage/' . $event->image) }}" alt="Event image"
+                                    <img src="{{ asset('storage/' . $event->image) }}"
+                                         alt="event image"
                                          class="max-w-xs rounded border">
 
-                                    <span class="text-[11px] text-gray-500 break-all">{{ $event->image }}</span>
+                                    <span class="text-[11px] text-gray-500 break-all">
+                    {{ $event->image }}
+                </span>
                                 </div>
                             </td>
                         </tr>
                     @endif
-
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold">Created At</th>
@@ -81,11 +93,11 @@
             <div class="mt-4 flex items-center gap-2">
                 <a href="{{ route('admin.events.edit', $event) }}"
                    class="px-4 py-2 text-xs rounded border bg-blue-600 text-white">
-                    Edit Event
+                    Edit event
                 </a>
 
                 <a href="{{ route('admin.events.index') }}" class="text-xs underline">
-                    Back to Events
+                    Back to events
                 </a>
             </div>
         </div>

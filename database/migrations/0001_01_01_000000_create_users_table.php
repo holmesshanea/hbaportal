@@ -50,6 +50,7 @@ return new class extends Migration
                 'Navy Reserve',
                 'Other'
             ])->default('Army');
+            $table->boolean('combat')->default(false);
             $table->boolean('profile_confirmed')->default(0);
             $table->boolean('id_confirmed')->default(0);
             $table->boolean('status_confirmed')->default(0);

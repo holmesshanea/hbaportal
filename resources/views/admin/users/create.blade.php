@@ -126,6 +126,25 @@
                         </select>
                     </div>
 
+                    {{-- COMBAT (required boolean) --}}
+                    <div class="mt-4">
+                        <label class="block text-xs font-semibold mb-1">Combat Veteran</label>
+
+                        {{-- Hidden input ensures value is always submitted (0 if unchecked) --}}
+                        <input type="hidden" name="combat" value="0">
+
+                        <label class="inline-flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                name="combat"
+                                value="1"
+                                {{ old('combat', 0) ? 'checked' : '' }}
+                                class="rounded border-gray-300"
+                            >
+                            <span class="text-xs">Yes (Combat Veteran)</span>
+                        </label>
+                    </div>
+
                 </div>
 
                 {{-- GENDER + PHONE --}}

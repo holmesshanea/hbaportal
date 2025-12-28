@@ -51,6 +51,13 @@
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="px-3 py-2 text-left font-semibold">Combat Veteran</th>
+                        <td class="px-3 py-2">
+                            {{ $user->combat ? 'Yes' : 'No' }}
+                        </td>
+                    </tr>
+
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold">Phone</th>
                         <td class="px-3 py-2">{{ $user->phone }}</td>
                     </tr>

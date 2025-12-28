@@ -13,14 +13,17 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-
+            $table->enum('event_type', ['retreat', 'event'])
+                ->default('retreat');
             $table->string('title');
             $table->text('short_description')->nullable();
             $table->text('description')->nullable();
             $table->string('location')->nullable();
 
-            $table->date('date')->nullable();
+            $table->date('start_date')->nullable();
             $table->time('start_time')->nullable();
+
+            $table->date('end_date')->nullable();
             $table->time('end_time')->nullable();
 
             $table->unsignedInteger('capacity')->nullable();

@@ -16,12 +16,6 @@
                         </div>
 
                         <nav class="flex flex-col text-sm">
-                            {{-- Retreats tab --}}
-                            <a href="{{ route('dashboard.retreats') }}"
-                               class="px-4 py-2 border-b border-gray-200 dark:border-gray-700
-                                      {{ (($section ?? 'retreats') === 'retreats') ? 'bg-gray-100 dark:bg-gray-800 font-semibold' : '' }}">
-                                Retreats
-                            </a>
 
                             {{-- Events tab --}}
                             <a href="{{ route('dashboard.events') }}"
@@ -39,11 +33,7 @@
                         <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                             <div class="space-y-1">
                                 <div class="text-sm font-semibold">
-                                    @if(($section ?? 'retreats') === 'retreats')
-                                        My Retreats
-                                    @elseif(($section ?? '') === 'events')
-                                        My Events
-                                    @endif
+                                    My Events
                                 </div>
                                 <div class="text-xs text-gray-500 dark:text-gray-400">
                                     View and manage your registrations.
@@ -55,47 +45,6 @@
                         </div>
 
                         <div class="p-4">
-                            {{-- RETREATS SECTION --}}
-                            @if(($section ?? 'retreats') === 'retreats')
-                                @if(isset($retreats) && count($retreats))
-                                    <div class="overflow-x-auto">
-                                        <table class="min-w-full text-xs">
-                                            <thead>
-                                            <tr class="border-b border-gray-200 dark:border-gray-700 text-left">
-                                                <th class="py-2 pr-4">Title</th>
-                                                <th class="py-2 pr-4">Start Date</th>
-                                                <th class="py-2 pr-4">End Date</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            @foreach($retreats as $retreat)
-                                                <tr class="border-b border-gray-100 dark:border-gray-800">
-                                                    <td class="py-2 pr-4">
-                                                        {{ $retreat->title }}
-                                                    </td>
-                                                    <td class="py-2 pr-4">
-                                                        {{ optional($retreat->start_date)->format('M d, Y') }}
-                                                    </td>
-                                                    <td class="py-2 pr-4">
-                                                        {{ optional($retreat->end_date)->format('M d, Y') }}
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                    @if(method_exists($retreats, 'links'))
-                                        <div class="mt-3">
-                                            {{ $retreats->links() }}
-                                        </div>
-                                    @endif
-                                @else
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        You are not registered for any retreats yet.
-                                    </p>
-                                @endif
-                            @endif
 
                             {{-- EVENTS SECTION --}}
                             @if(($section ?? '') === 'events')

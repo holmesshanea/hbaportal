@@ -10,15 +10,21 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = [
+        'event_type',
         'title',
         'short_description',
         'description',
         'location',
-        'date',
+        'start_date',
         'start_time',
+        'end_date',
         'end_time',
         'capacity',
         'image',
+    ];
+
+    protected $attributes = [
+        'event_type' => 'retreat',
     ];
 
      public function users()

@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Add Event')
+@section('title', 'Add event')
 
 @section('content')
     <section class="bg-white dark:bg-[#161615] dark:text-[#EDEDEC] rounded-lg p-6 lg:p-10 text-[13px] leading-[20px]">
         <div class="max-w-2xl mx-auto">
-            <h1 class="text-base font-semibold mb-4">Add Event</h1>
+            <h1 class="text-base font-semibold mb-4">Add event</h1>
 
             @if ($errors->any())
                 <div class="mb-4 border border-red-300 bg-red-50 text-red-800 text-xs p-3 rounded">
@@ -17,11 +17,22 @@
                 </div>
             @endif
 
-            <form action="{{ route('admin.events.store') }}"
-                  method="POST"
-                  enctype="multipart/form-data">
+            <form method="POST"
+                  action="{{ route('admin.events.store') }}"
+                  enctype="multipart/form-data"
+                  class="space-y-6">
+                @csrf
 
-            @csrf
+                {{-- EVENT TYPE --}}
+                <div>
+                    <label class="block text-xs font-semibold mb-1" for="event_type">Event Type</label>
+                    <select id="event_type" name="event_type"
+                            class="w-full border rounded px-3 py-2 text-xs"
+                            required>
+                        <option value="retreat" {{ old('event_type', 'retreat') === 'retreat' ? 'selected' : '' }}>Retreat</option>
+                        <option value="event" {{ old('event_type', 'retreat') === 'event' ? 'selected' : '' }}>Event</option>
+                    </select>
+                </div>
 
                 {{-- TITLE --}}
                 <div>
@@ -56,12 +67,12 @@
                            class="w-full border rounded px-3 py-2 text-xs">
                 </div>
 
-                {{-- DATE / TIMES --}}
+                {{-- DATES / TIMES --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold mb-1" for="date">Date</label>
-                        <input id="date" name="date" type="date"
-                               value="{{ old('date') }}"
+                        <label class="block text-xs font-semibold mb-1" for="start_date">Start Date</label>
+                        <input id="start_date" name="start_date" type="date"
+                               value="{{ old('start_date') }}"
                                class="w-full border rounded px-3 py-2 text-xs"
                                required>
                     </div>
@@ -76,18 +87,27 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
+                        <label class="block text-xs font-semibold mb-1" for="end_date">End Date</label>
+                        <input id="end_date" name="end_date" type="date"
+                               value="{{ old('end_date') }}"
+                               class="w-full border rounded px-3 py-2 text-xs"
+                               required>
+                    </div>
+
+                    <div>
                         <label class="block text-xs font-semibold mb-1" for="end_time">End Time</label>
                         <input id="end_time" name="end_time" type="time"
                                value="{{ old('end_time') }}"
                                class="w-full border rounded px-3 py-2 text-xs">
                     </div>
+                </div>
 
-                    <div>
-                        <label class="block text-xs font-semibold mb-1" for="capacity">Capacity</label>
-                        <input id="capacity" name="capacity" type="number" min="0"
-                               value="{{ old('capacity') }}"
-                               class="w-full border rounded px-3 py-2 text-xs">
-                    </div>
+                {{-- CAPACITY --}}
+                <div>
+                    <label class="block text-xs font-semibold mb-1" for="capacity">Capacity</label>
+                    <input id="capacity" name="capacity" type="number" min="0"
+                           value="{{ old('capacity') }}"
+                           class="w-full border rounded px-3 py-2 text-xs">
                 </div>
 
                 {{-- IMAGE --}}

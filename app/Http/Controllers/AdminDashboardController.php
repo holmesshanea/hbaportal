@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 class AdminDashboardController extends Controller
 {
     /** Allowed constants for dropdown / validation */
+
+    private const EVENT_TYPES = ['retreat', 'event'];
     private const USER_ROLES = ['User', 'Admin', 'Super'];
 
     private const USER_STATUSES = ['Veteran', 'Staff'];
@@ -93,6 +95,7 @@ class AdminDashboardController extends Controller
             'role'   => ['required', 'string', Rule::in(self::USER_ROLES)],
             'status' => ['required', 'string', Rule::in(self::USER_STATUSES)],
             'branch' => ['required', 'string', Rule::in(self::USER_BRANCHES)],
+            'combat' => ['required', 'boolean'],
             'gender' => ['required', 'string', Rule::in(self::USER_GENDERS)],
 
             'phone'                   => ['required', 'string', 'max:12'],
@@ -147,6 +150,7 @@ class AdminDashboardController extends Controller
             'role'   => ['nullable', 'string', Rule::in(self::USER_ROLES)],
             'status' => ['nullable', 'string', Rule::in(self::USER_STATUSES)],
             'branch' => ['nullable', 'string', Rule::in(self::USER_BRANCHES)],
+            'combat' => ['required', 'boolean'],
             'gender' => ['nullable', 'string', Rule::in(self::USER_GENDERS)],
 
             'phone'                   => ['nullable', 'string', 'max:255'],
@@ -211,144 +215,6 @@ class AdminDashboardController extends Controller
             ->with('status', 'User deleted successfully.');
     }
 
-    /* =========================================================
-     * RETREATS CRUD
-     * Retreat model fields: title, description, location,
-     * start_date, start_time, end_date, end_time, capacity
-     * =======================================================*/
-
-    /**
-     * Show Retreats list.
-     * Route: GET /admin/retreats → name: admin.retreats.index
-     */
-    public function retreatsIndex()
-    {
-        $retreats = Retreat::orderBy('start_date', 'desc')->paginate(15);
-
-        return view('admin.dashboard', [
-            'section' => 'retreats',
-            'users'         => null,
-            'retreats'      => $retreats,
-            'events'        => null,
-        ]);
-    }
-
-    /**
-     * Show create Retreat form.
-     * Route: GET /admin/retreats/create → name: admin.retreats.create
-     */
-    public function retreatsCreate()
-    {
-        return view('admin.retreats.create');
-    }
-
-    /**
-     * Store a new Retreat.
-     * Route: POST /admin/retreats → name: admin.retreats.store
-     */
-    public function retreatsStore(Request $request)
-    {
-        $data = $request->validate([
-            'title'       => ['required', 'string', 'max:255'],
-            'short_description' => ['nullable', 'string'],
-            'description' => ['nullable', 'string'],
-            'location'    => ['nullable', 'string', 'max:255'],
-
-            'start_date'  => ['required', 'date'],
-            'start_time'  => ['nullable', 'date_format:H:i'],
-
-            'end_date'    => ['required', 'date', 'after_or_equal:start_date'],
-            'end_time'    => ['nullable', 'date_format:H:i'],
-
-            'capacity'    => ['nullable', 'integer', 'min:0'],
-
-            // image is now a file upload
-            'image'       => ['nullable', 'image', 'max:4096'],
-        ]);
-
-        if ($request->hasFile('image')) {
-            // stores in storage/app/public/retreats
-            $data['image'] = $request->file('image')->store('retreats', 'public');
-        }
-
-        Retreat::create($data);
-
-        return redirect()
-            ->route('admin.retreats.index')
-            ->with('status', 'Retreat created successfully.');
-    }
-
-
-    /**
-     * Show a single Retreat.
-     * Route: GET /admin/retreats/{retreat} → name: admin.retreats.show
-     */
-    public function retreatsShow(Retreat $retreat)
-    {
-        return view('admin.retreats.show', compact('retreat'));
-    }
-
-    /**
-     * Show edit Retreat form.
-     * Route: GET /admin/retreats/{retreat}/edit → name: admin.retreats.edit
-     */
-    public function retreatsEdit(Retreat $retreat)
-    {
-        return view('admin.retreats.edit', compact('retreat'));
-    }
-
-    /**
-     * Update a Retreat.
-     * Route: PUT /admin/retreats/{retreat} → name: admin.retreats.update
-     */
-    public function retreatsUpdate(Request $request, Retreat $retreat)
-    {
-        $data = $request->validate([
-            'title'       => ['required', 'string', 'max:255'],
-            'short_description' => ['nullable', 'string'],
-            'description' => ['nullable', 'string'],
-            'location'    => ['nullable', 'string', 'max:255'],
-
-            'start_date'  => ['required', 'date'],
-            'start_time'  => ['nullable', 'date_format:H:i'],
-
-            'end_date'    => ['required', 'date', 'after_or_equal:start_date'],
-            'end_time'    => ['nullable', 'date_format:H:i'],
-
-            'capacity'    => ['nullable', 'integer', 'min:0'],
-
-            'image'       => ['nullable', 'image', 'max:4096'],
-        ]);
-
-        if ($request->hasFile('image')) {
-            // optional: clean up old file
-            if ($retreat->image && Storage::disk('public')->exists($retreat->image)) {
-                Storage::disk('public')->delete($retreat->image);
-            }
-
-            $data['image'] = $request->file('image')->store('retreats', 'public');
-        }
-
-        $retreat->update($data);
-
-        return redirect()
-            ->route('admin.retreats.index')
-            ->with('status', 'Retreat updated successfully.');
-    }
-
-
-    /**
-     * Delete a Retreat.
-     * Route: DELETE /admin/retreats/{retreat} → name: admin.retreats.destroy
-     */
-    public function retreatsDestroy(Retreat $retreat)
-    {
-        $retreat->delete();
-
-        return redirect()
-            ->route('admin.retreats.index')
-            ->with('status', 'Retreat deleted successfully.');
-    }
 
     /* =========================================================
      * EVENTS CRUD
@@ -362,7 +228,7 @@ class AdminDashboardController extends Controller
      */
     public function eventsIndex()
     {
-        $events = Event::orderBy('date', 'desc')->paginate(15);
+        $events = Event::orderBy('start_date', 'desc')->paginate(15);
 
         return view('admin.dashboard', [
             'section' => 'events',
@@ -388,14 +254,17 @@ class AdminDashboardController extends Controller
     public function eventsStore(Request $request)
     {
         $data = $request->validate([
+            'event_type' => ['required', Rule::in(self::EVENT_TYPES)],
             'title'       => ['required', 'string', 'max:255'],
             'short_description' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
             'location'    => ['nullable', 'string', 'max:255'],
 
-            'date'        => ['required', 'date'],
-            'start_time'  => ['nullable', 'date_format:H:i'],
-            'end_time'    => ['nullable', 'date_format:H:i'],
+            'start_date' => ['required', 'date'],
+            'start_time' => ['nullable', 'date_format:H:i'],
+
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
+            'end_time' => ['nullable', 'date_format:H:i'],
 
             'capacity'    => ['nullable', 'integer', 'min:0'],
 
@@ -439,14 +308,17 @@ class AdminDashboardController extends Controller
     public function eventsUpdate(Request $request, Event $event)
     {
         $data = $request->validate([
+            'event_type' => ['required', Rule::in(self::EVENT_TYPES)],
             'title'       => ['required', 'string', 'max:255'],
             'short_description' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
             'location'    => ['nullable', 'string', 'max:255'],
 
-            'date'        => ['required', 'date'],
-            'start_time'  => ['nullable', 'date_format:H:i'],
-            'end_time'    => ['nullable', 'date_format:H:i'],
+            'start_date' => ['required', 'date'],
+            'start_time' => ['nullable', 'date_format:H:i'],
+
+            'end_date' => ['required', 'date', 'after_or_equal:start_date'],
+            'end_time' => ['nullable', 'date_format:H:i'],
 
             'capacity'    => ['nullable', 'integer', 'min:0'],
 

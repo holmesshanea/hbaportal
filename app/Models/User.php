@@ -28,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'role',
         'status',
         'branch',
+        'combat',
         'gender',
         'phone',
         'emergency_contact_name',
@@ -63,6 +64,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'combat' => 'boolean',
         ];
     }
 

@@ -19,10 +19,6 @@
                                 Users
                             </a>
 
-                            <a href="{{ route('admin.retreats.index') }}"
-                               class="px-4 py-2 border-b border-gray-200 dark:border-gray-700 {{ ($section ?? '') === 'retreats' ? 'bg-gray-100 dark:bg-gray-800 font-semibold' : '' }}">
-                                Retreats
-                            </a>
 
                             <a href="{{ route('admin.events.index') }}"
                                class="px-4 py-2 border-b border-gray-200 dark:border-gray-700 {{ ($section ?? '') === 'events' ? 'bg-gray-100 dark:bg-gray-800 font-semibold' : '' }}">
@@ -39,7 +35,7 @@
                             <div class="space-y-1">
                                 <div class="text-sm font-semibold">Admin Dashboard</div>
                                 <div class="text-xs text-gray-500 dark:text-gray-400">
-                                    Manage Users, Retreats, and Events
+                                    Manage Users and Events
                                 </div>
                             </div>
 
@@ -49,11 +45,6 @@
                                     <a href="{{ route('admin.users.create') }}"
                                        class="inline-flex items-center px-3 py-1.5 text-xs border rounded bg-blue-600 text-white hover:bg-blue-700">
                                         + Add User
-                                    </a>
-                                @elseif(($section ?? '') === 'retreats')
-                                    <a href="{{ route('admin.retreats.create') }}"
-                                       class="inline-flex items-center px-3 py-1.5 text-xs border rounded bg-blue-600 text-white hover:bg-blue-700">
-                                        + Add Retreat
                                     </a>
                                 @elseif(($section ?? '') === 'events')
                                     <a href="{{ route('admin.events.create') }}"
@@ -128,71 +119,6 @@
                                 @endif
                             @endif
 
-                            {{-- RETREATS TABLE --}}
-                            @if(($section ?? '') === 'retreats')
-                                <h2 class="text-sm font-semibold mb-2">Retreats</h2>
-
-                                <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded">
-                                    <table class="min-w-full text-xs border-collapse">
-                                        <thead class="bg-gray-50 dark:bg-gray-800">
-                                        <tr>
-                                            <th class="px-2 py-1 border">Title</th>
-                                            <th class="px-2 py-1 border">Start Date</th>
-                                            <th class="px-2 py-1 border">End Date</th>
-                                            <th class="px-2 py-1 border">Actions</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        @forelse(($retreats ?? []) as $retreat)
-                                            <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-[#161615] dark:even:bg-gray-800">
-                                                <td class="px-2 py-1 border">
-                                                    <a href="{{ route('admin.retreats.show', $retreat) }}" class="underline">
-                                                        {{ $retreat->title }}
-                                                    </a>
-                                                </td>
-                                                <td class="px-2 py-1 border">
-                                                    {{ $retreat->start_date }}
-                                                    @if($retreat->start_time)
-                                                        <span class="text-[11px] text-gray-500">({{ $retreat->start_time }})</span>
-                                                    @endif
-                                                </td>
-                                                <td class="px-2 py-1 border">
-                                                    {{ $retreat->end_date }}
-                                                    @if($retreat->end_time)
-                                                        <span class="text-[11px] text-gray-500">({{ $retreat->end_time }})</span>
-                                                    @endif
-                                                </td>
-                                                <td class="px-2 py-1 border">
-                                                    <div class="flex flex-wrap gap-1">
-                                                        <a href="{{ route('admin.retreats.edit', $retreat) }}"
-                                                           class="px-2 py-0.5 border rounded text-[11px]">Edit</a>
-                                                        <form method="POST" action="{{ route('admin.retreats.destroy', $retreat) }}"
-                                                              onsubmit="return confirm('Delete this retreat?');"
-                                                              class="inline">
-                                                            @csrf @method('DELETE')
-                                                            <button type="submit"
-                                                                    class="px-2 py-0.5 border rounded text-[11px] text-red-600">
-                                                                Delete
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="4" class="px-2 py-2 text-center text-gray-500">
-                                                    No retreats found.
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                @if(isset($retreats) && method_exists($retreats, 'links'))
-                                    <div class="mt-3">{{ $retreats->links() }}</div>
-                                @endif
-                            @endif
 
                             {{-- EVENTS TABLE --}}
                             @if(($section ?? '') === 'events')

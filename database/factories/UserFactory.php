@@ -16,6 +16,7 @@ class UserFactory extends Factory
             'role' => 'User',
             'status' => 'Active',
             'branch' => 'Other',
+            'combat' => false,
             'gender' => 'Male',
             'phone' => $this->faker->phoneNumber(),
             'emergency_contact_name' => $this->faker->name(),
