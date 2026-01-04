@@ -15,7 +15,8 @@
                                 <ul class="list-disc list-inside">
                                     @php
                                         $fieldOrder = [
-                                            'name',
+                                           'last_name',
+                                           'first_name',
                                             'email',
                                             'password',
                                             'password_confirmation',
@@ -51,21 +52,30 @@
                 {{-- BASIC INFO --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold mb-1" for="name">Name</label>
-                        <input id="name" name="name" type="text"
-                               value="{{ old('name') }}"
+                        <label class="block text-xs font-semibold mb-1" for="last_name">Last Name</label>
+                        <input id="last_name" name="last_name" type="text"
+                               value="{{ old('last_name') }}"
                                class="w-full border rounded px-3 py-2 text-xs"
                                required>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold mb-1" for="email">Email</label>
-                        <input id="email" name="email" type="email"
-                               value="{{ old('email') }}"
+
+                        <label class="block text-xs font-semibold mb-1" for="first_name">First Name</label>
+                        <input id="first_name" name="first_name" type="text"
+                               value="{{ old('first_name') }}"
                                class="w-full border rounded px-3 py-2 text-xs"
                                required>
                     </div>
                 </div>
+                <div class="mt-4">
+                    <label class="block text-xs font-semibold mb-1" for="email">Email</label>
+                    <input id="email" name="email" type="email"
+                           value="{{ old('email') }}"
+                           class="w-full border rounded px-3 py-2 text-xs"
+                           required>
+                </div>
+
 
                 {{-- PASSWORD --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -104,6 +114,26 @@
                             <option value="Veteran" {{ old('status', 'Veteran') === 'Veteran' ? 'selected' : '' }}>Veteran</option>
                             <option value="Staff" {{ old('status') === 'Staff' ? 'selected' : '' }}>Staff</option>
                         </select>
+                    </div>
+
+                    {-- PROFILE CONFIRMED --}}
+                    <div class="mt-4">
+                        <label class="block text-xs font-semibold mb-1">
+                            Profile Confirmed
+                        </label>
+
+                        <input type="hidden" name="profile_confirmed" value="0">
+
+                        <label class="inline-flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                name="profile_confirmed"
+                                value="1"
+                                {{ old('profile_confirmed', 0) ? 'checked' : '' }}
+                                class="rounded border-gray-300"
+                            >
+                            <span class="text-xs">Yes (Profile Verified)</span>
+                        </label>
                     </div>
 
                     {{-- BRANCH --}}

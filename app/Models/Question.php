@@ -5,34 +5,33 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Event extends Model
+class Question extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'event_type',
-        'title',
-        'short_description',
-        'description',
-        'location',
-        'start_date',
-        'start_time',
-        'end_date',
-        'end_time',
-        'capacity',
-        'image',
+        'user_id',
+        'event_id',
+        'expect',
+        'suffer',
+        'allergies',
+        'concerns',
+        'conduct',
     ];
 
     protected $attributes = [
-        'event_type' => 'retreat',
+        'suffer'    => 'None',
+        'allergies' => 'None',
+        'concerns'  => 'None',
     ];
 
-     public function users()
+    public function user()
     {
-        return $this->belongsToMany(\App\Models\User::class)
-            ->withPivot(['status', 'rsvped_at'])
-            ->withTimestamps();
+        return $this->belongsTo(User::class);
     }
 
-
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
+    }
 }

@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Attribute;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -22,7 +22,8 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'last_name',
+        'first_name',
         'email',
         'password',
         'role',
@@ -39,7 +40,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'profile_confirmed',
         'id_confirmed',
         'status_confirmed',
-        'image'
+        'image',
+         'email_verified_at',
 
 
     ];
@@ -65,6 +67,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'combat' => 'boolean',
+            'profile_confirmed' => 'boolean',
         ];
     }
 
@@ -75,17 +78,33 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimestamps();
     }
 
-    public function retreats()
+public function setFirstNameAttribute($value): void
+{
+    $this->attributes['first_name'] = self::formatPersonName($value);
+}
+
+    public function setLastNameAttribute($value): void
     {
-        return $this->belongsToMany(Retreat::class)
-            ->withPivot(['status', 'rsvped_at'])
-            ->withTimestamps();
+        $this->attributes['last_name'] = self::formatPersonName($value);
     }
 
+    private static function formatPersonName($value): string
+    {
+        $value = trim((string) $value);
+        $value = mb_strtolower($value, 'UTF-8');
+
+        // Capitalize any letter that follows start, space, hyphen, or apostrophe
+        return preg_replace_callback(
+            "/(^|[\\s\\-'])\\p{L}/u",
+            fn ($m) => mb_strtoupper($m[0], 'UTF-8'),
+            $value
+        );
+    }
     public function isProfileComplete(): bool
     {
         $requiredFields = [
-            'name',
+            'last_name',
+            'first_name',
             'email',
             'password',
             'role',
@@ -110,6 +129,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return true;
     }
 
+    public function questions()
+    {
+        return $this->hasMany(\App\Models\Question::class);
+    }
+
 
 }
-

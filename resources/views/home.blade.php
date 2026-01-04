@@ -2,6 +2,21 @@
 @section('title', 'Welcome')
 
 @section('content')
+
+    @if (session('status') === 'email-verified')
+        <div class="w-full bg-emerald-100 border-b-4 border-emerald-500 text-emerald-900 px-6 py-4 text-center">
+            <div class="text-lg font-semibold flex items-center justify-center gap-2">
+                <span aria-hidden="true">✅</span>
+                <span>Your email address has been successfully verified.</span>
+            </div>
+
+            <div class="mt-1 text-sm font-normal text-emerald-800">
+                You now have full access to the HBA Portal.
+            </div>
+        </div>
+    @endif
+
+
     <section class="bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-sm ring-1 ring-black/5 dark:ring-white/5 rounded-lg p-6 lg:p-10 text-[13px] leading-[20px]">
 
         <style>
@@ -13,6 +28,7 @@
             }
         </style>
 
+
         <h1 class="mb-4 text-base font-medium">Welcome!</h1>
 
         <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">
@@ -22,6 +38,7 @@
             for any other purpose. For additional details regarding site usage and data collection, please review
             our <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.
         </p>
+
         @if(session('success'))
             <div class="mb-4 inline-flex items-center rounded border border-green-200 bg-green-50 px-4 py-2 text-green-800 text-sm">
                 {{ session('success') }}
@@ -40,17 +57,44 @@
              * - Keyed by the related model id
              * - Value is pivot status (going, waitlist, cancelled, etc)
              */
-
             $eventRsvpStatuses = [];
 
             if (auth()->check()) {
-
                 // Event RSVPs for this user: [event_id => status]
                 $eventRsvpStatuses = auth()->user()
                     ->events()
                     ->pluck('event_user.status', 'events.id')
                     ->toArray();
             }
+
+            /**
+             * Event type presentation map
+             * - Color coding (badge + left accent)
+             * - Iconography (emoji, but you can swap with SVG later)
+             * - Small header/badge text
+             *
+             * Add more types later by extending this array.
+             */
+            $eventTypeStyles = [
+                'event' => [
+                    'label' => 'Event',
+                    'icon'  => '📅',
+                    'accent' => 'border-l-sky-500 dark:border-l-sky-400',
+                    'badge'  => 'bg-sky-100 text-sky-900 border-sky-200 dark:bg-sky-900/30 dark:text-sky-200 dark:border-sky-800',
+                ],
+                'retreat' => [
+                    'label' => 'Retreat',
+                    'icon'  => '🏕️',
+                    'accent' => 'border-l-emerald-600 dark:border-l-emerald-400',
+                    'badge'  => 'bg-emerald-100 text-emerald-900 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:border-emerald-800',
+                ],
+                'default' => [
+                    'label' => 'Other',
+                    'icon'  => '📌',
+                    'accent' => 'border-l-zinc-400 dark:border-l-zinc-500',
+                    'badge'  => 'bg-zinc-100 text-zinc-900 border-zinc-200 dark:bg-zinc-900/30 dark:text-zinc-200 dark:border-zinc-800',
+                ],
+            ];
         @endphp
 
         {{-- Single-column layout of Events --}}
@@ -63,7 +107,15 @@
                 </h2>
 
                 @forelse($events as $event)
-                    <div class="mb-4 w-full rounded-lg border border-[#e4e3df] dark:border-[#2b2b28] bg-[#f9f8f4] dark:bg-[#1e1e1c] p-4 flex flex-col sm:flex-row gap-4">
+                    @php
+                        $typeKey = strtolower($event->event_type ?? 'event');
+                        $typeMeta = $eventTypeStyles[$typeKey] ?? $eventTypeStyles['default'];
+
+                        // Prefer start_date if your model has it, otherwise fall back to date
+                        $displayDate = $event->start_date ?? $event->date ?? null;
+                    @endphp
+
+                    <div class="mb-4 w-full rounded-lg border border-[#e4e3df] dark:border-[#2b2b28] bg-[#f9f8f4] dark:bg-[#1e1e1c] p-4 flex flex-col sm:flex-row gap-4 border-l-4 {{ $typeMeta['accent'] }}">
 
                         {{-- Event image (left) --}}
                         @if($event->image)
@@ -82,6 +134,41 @@
 
                         {{-- Event info (right) --}}
                         <div class="flex-1 min-w-0 flex flex-col">
+
+                            {{-- Type badge (small header/badge text + icon) --}}
+                            <div class="mb-2 flex items-center gap-2">
+                                <span
+                                    class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide {{ $typeMeta['badge'] }}"
+                                    role="note"
+                                    aria-label="Type: {{ $typeMeta['label'] }}"
+                                    title="{{ $typeMeta['label'] }}"
+                                >
+                                    <span aria-hidden="true">{{ $typeMeta['icon'] }}</span>
+                                    <span>{{ $typeMeta['label'] }}</span>
+                                </span>
+
+                                {{-- Optional subtle helper text for screen readers (keeps accessibility strong even without color) --}}
+                                <span class="sr-only">This item is a {{ $typeMeta['label'] }}.</span>
+                            </div>
+
+                            {{-- Date (bold, left) + Start Time (right) --}}
+                            @if($displayDate || $event->start_time)
+                                <div class="flex items-start justify-between gap-3 mb-1">
+                                    <div class="text-[13px] font-semibold text-[#1b1b18] dark:text-[#EDEDEC]">
+                                        @if($displayDate)
+                                            {{ \Carbon\Carbon::parse($displayDate)->format('j F, Y') }}
+                                        @endif
+                                    </div>
+
+                                    @if($event->start_time)
+                                        <div class="text-[12px] text-[#706f6c] dark:text-[#A1A09A] whitespace-nowrap">
+                                            {{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }}
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+
+                            {{-- Title --}}
                             <div class="font-semibold text-[13px] mb-1">
                                 <a
                                     href="{{ route('events.show', $event) }}"
@@ -91,34 +178,19 @@
                                 </a>
                             </div>
 
+                            {{-- Short Description --}}
                             @if($event->short_description)
                                 <div class="text-[12px] leading-4 break-words text-[#4b4a47] dark:text-[#C9C9C3]">
                                     {{ $event->short_description }}
                                 </div>
                             @endif
 
-                            <div class="mt-2 text-[12px] leading-5 text-[#706f6c] dark:text-[#A1A09A] space-y-0.5">
-                                @if($event->date)
-                                    <div class="meta-row">
-                                        <span class="label font-medium">Start Date:</span>
-                                        <span class="value">{{ \Carbon\Carbon::parse($event->date)->format('M j, Y') }}</span>
-                                    </div>
-                                @endif
-
-                                @if($event->start_time)
-                                    <div class="meta-row">
-                                        <span class="label font-medium">Start Time:</span>
-                                        <span class="value">{{ \Carbon\Carbon::parse($event->start_time)->format('g:i A') }}</span>
-                                    </div>
-                                @endif
-
-                                @if($event->location)
-                                    <div class="meta-row">
-                                        <span class="label font-medium">Location:</span>
-                                        <span class="value">{{ $event->location }}</span>
-                                    </div>
-                                @endif
-                            </div>
+                            {{-- Location --}}
+                            @if($event->location)
+                                <div class="mt-2 text-[12px] leading-5 text-[#706f6c] dark:text-[#A1A09A] break-words">
+                                    {{ $event->location }}
+                                </div>
+                            @endif
 
                             <div class="mt-3 flex justify-end gap-2">
 
@@ -145,6 +217,7 @@
                                             ->count();
                                         $hasCapacity = is_null($event->capacity) || $goingCount < $event->capacity;
                                     @endphp
+
                                     @if($status === 'going')
                                         <span class="inline-flex items-center justify-center rounded-md border border-green-200 bg-green-100 px-3 py-1.5 text-[11px] font-medium text-green-800">
                                             RSVP’d (Going)
@@ -162,6 +235,7 @@
                                                 Cancel
                                             </button>
                                         </form>
+
                                     @elseif($status === 'waitlist')
                                         <span class="inline-flex items-center justify-center rounded-md border border-amber-200 bg-amber-100 px-3 py-1.5 text-[11px] font-medium text-amber-800">
                                             RSVP’d (Waitlist)
@@ -206,8 +280,8 @@
                                         </form>
 
                                     @else
-                                        <form method="POST" action="{{ route('events.rsvp.store', $event) }}">
-                                            @csrf
+                                        <form method="GET" action="{{ route('events.rsvp.questions', $event) }}">
+                                            <input type="hidden" name="status" value="going">
                                             <button
                                                 type="submit"
                                                 class="inline-flex items-center justify-center rounded-md border border-green-600
@@ -228,6 +302,12 @@
                         There are currently no events scheduled.
                     </p>
                 @endforelse
+
+                @if ($events->hasPages())
+                    <div class="mt-6 flex justify-center">
+                        {{ $events->links() }}
+                    </div>
+                @endif
             </div>
 
         </div>

@@ -8,10 +8,11 @@ class HomeController extends Controller
 {
     public function index()
     {
-                $events = Event::orderBy('date')
+        $events = Event::orderBy('start_date')
             ->orderBy('start_time')
-            ->get();
+            ->paginate(3); // 👈 THIS is the key change
 
         return view('home', compact('events'));
     }
 }
+

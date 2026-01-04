@@ -43,15 +43,27 @@
                         $isAdminRole = in_array($roleValue, ['admin', 'super', 'super user'], true);
                     }
 
-                    $dashboardRouteName = $isAdminRole ? 'admin.dashboard' : 'dashboard';
-                    $dashboardRoute = route($dashboardRouteName);
+                    // ---- Nav state helpers (prevent undefined vars) ----
+                    $onHome = $onHome ?? request()->routeIs('home');
+                    $onProfile = $onProfile ?? request()->routeIs('profile.*');
+                    $onDashboard = $onDashboard ?? request()->routeIs('admin.dashboard');
 
-                    // convenience flags
-                    $onHome = request()->routeIs('home') || request()->is('/');
-                    $onProfile = request()->routeIs('profile.edit');
-                    $onDashboard = request()->routeIs($dashboardRouteName);
+                    // Admin dashboard URL (named route preferred)
+                    $dashboardRoute = $dashboardRoute ?? (Route::has('admin.dashboard')
+                        ? route('admin.dashboard')
+                        : url('/admin/dashboard'));
                 @endphp
+
+                @if ($isAdminRole && Route::has('admin.dashboard'))
+                    <a
+                        href="{{ route('admin.dashboard') }}"
+                        class="text-sm font-medium text-gray-700 hover:text-emerald-600 transition"
+                    >
+                        Admin Dashboard
+                    </a>
+                @endif
             @endauth
+
 
             {{-- RIGHT SIDE --}}
             <div class="flex items-center gap-3">
@@ -88,7 +100,7 @@
                                 </span>
                             @endif
 
-                            {{ $user->name }}
+                                {{ $user->last_name }}, {{ $user->first_name }}
                         </span>
 
                         @unless($onHome)
@@ -187,7 +199,7 @@
                                 </svg>
                             </span>
                         @endif
-                        <span class="font-medium">{{ $user->name }}</span>
+                            <span class="font-medium">{{ $user->last_name }} {{ $user->first_name }}</span>
                     </div>
 
                     @unless($onHome)
@@ -224,6 +236,7 @@
             </div>
         </div>
     @endif
+
     @if (session('success'))
         <div class="mb-4 rounded border border-green-300 bg-green-50 px-4 py-3 text-green-800">
             {{ session('success') }}

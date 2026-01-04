@@ -59,7 +59,10 @@ class AdminDashboardController extends Controller
      */
     public function usersIndex()
     {
-        $users = User::orderBy('name')->paginate(15);
+
+        $users = User::orderBy('last_name')
+            ->orderBy('first_name')
+            ->paginate(15);
 
         return view('admin.dashboard', [
             'section' => 'users',
@@ -86,7 +89,8 @@ class AdminDashboardController extends Controller
     public function usersStore(Request $request)
     {
         $data = $request->validate([
-            'name'  => ['required', 'string', 'max:255'],
+            'first_name'  => ['required', 'string', 'min:3', 'max:255'],
+            'last_name'  => ['required', 'string', 'min:3', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
 
             // Password is hashed automatically via the cast on the User model.
@@ -94,6 +98,7 @@ class AdminDashboardController extends Controller
 
             'role'   => ['required', 'string', Rule::in(self::USER_ROLES)],
             'status' => ['required', 'string', Rule::in(self::USER_STATUSES)],
+            'profile_confirmed' => ['required', 'boolean'],
             'branch' => ['required', 'string', Rule::in(self::USER_BRANCHES)],
             'combat' => ['required', 'boolean'],
             'gender' => ['required', 'string', Rule::in(self::USER_GENDERS)],
@@ -106,6 +111,8 @@ class AdminDashboardController extends Controller
             'state'   => ['required', 'string', 'max:2', 'alpha'],
             'zipcode' => ['required', 'string', 'digits:5'],
         ]);
+
+        $data['email_verified_at'] = now();
 
         User::create($data);
 
@@ -139,7 +146,8 @@ class AdminDashboardController extends Controller
     public function usersUpdate(Request $request, User $user)
     {
         $data = $request->validate([
-            'name'  => ['required', 'string', 'max:255'],
+            'first_name'  => ['required', 'string', 'min:3', 'max:255'],
+            'last_name'  => ['required', 'string', 'min:3', 'max:255'],
             'email' => [
                 'required',
                 'email',
@@ -149,6 +157,7 @@ class AdminDashboardController extends Controller
 
             'role'   => ['nullable', 'string', Rule::in(self::USER_ROLES)],
             'status' => ['nullable', 'string', Rule::in(self::USER_STATUSES)],
+            'profile_confirmed' => ['required', 'boolean'],
             'branch' => ['nullable', 'string', Rule::in(self::USER_BRANCHES)],
             'combat' => ['required', 'boolean'],
             'gender' => ['nullable', 'string', Rule::in(self::USER_GENDERS)],
@@ -192,6 +201,10 @@ class AdminDashboardController extends Controller
 
             // store in storage/app/public/verification-images
             $data['image'] = $request->file('image')->store('verification-images', 'public');
+        }
+
+        if ($request->filled('email') && $request->input('email') !== $user->email) {
+            $data['email_verified_at'] = now();
         }
 
         $user->update($data);

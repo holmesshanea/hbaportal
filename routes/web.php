@@ -6,7 +6,6 @@ use App\Http\Controllers\EventRsvpController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -64,10 +63,13 @@ Route::get('/contact', [ContactController::class, 'showForm'])->name('contact.sh
 Route::post('/contact', [ContactController::class, 'submitForm'])->name('contact.submit');
 
 // Event RSVP
-Route::post('/events/{event}/rsvp', [EventRsvpController::class, 'store'])
-    ->middleware('auth')
-    ->name('events.rsvp.store');
+Route::middleware('auth')->group(function () {
+    Route::get('/events/{event}/rsvp/questions', [EventRsvpController::class, 'createQuestions'])
+        ->name('events.rsvp.questions');
 
-Route::patch('/events/{event}/rsvp', [EventRsvpController::class, 'update'])
-    ->middleware('auth')
-    ->name('events.rsvp.update');
+    Route::post('/events/{event}/rsvp', [EventRsvpController::class, 'store'])
+        ->name('events.rsvp.store');
+
+    Route::patch('/events/{event}/rsvp', [EventRsvpController::class, 'update'])
+        ->name('events.rsvp.update');
+});

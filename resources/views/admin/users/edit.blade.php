@@ -28,20 +28,28 @@
                 {{-- BASIC INFO --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold mb-1" for="name">Name</label>
-                        <input id="name" name="name" type="text"
-                               value="{{ old('name', $user->name) }}"
+                        <label class="block text-xs font-semibold mb-1" for="last_name">Last Name</label>
+                        <input id="last_name" name="last_name" type="text"
+                               value="{{ old('last_name', $user->last_name) }}"
                                class="w-full border rounded px-3 py-2 text-xs"
                                required>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold mb-1" for="email">Email</label>
-                        <input id="email" name="email" type="email"
-                               value="{{ old('email', $user->email) }}"
+                        <label class="block text-xs font-semibold mb-1" for="first_name">First Name</label>
+                        <input id="first_name" name="first_name" type="text"
+                               value="{{ old('first_name', $user->first_name) }}"
                                class="w-full border rounded px-3 py-2 text-xs"
                                required>
                     </div>
+                </div>
+
+                <div class="mt-4">
+                    <label class="block text-xs font-semibold mb-1" for="email">Email</label>
+                    <input id="email" name="email" type="email"
+                           value="{{ old('email', $user->email) }}"
+                           class="w-full border rounded px-3 py-2 text-xs"
+                           required>
                 </div>
 
                 {{-- PASSWORD (OPTIONAL) --}}
@@ -85,6 +93,27 @@
                             <option value="Staff" {{ $user->status == 'Staff' ? 'selected' : '' }}>Staff</option>
                         </select>
                     </div>
+
+                    {{-- PROFILE CONFIRMED --}}
+                    <div class="mt-4">
+                        <label class="block text-xs font-semibold mb-1">
+                            Profile Confirmed
+                        </label>
+
+                        <input type="hidden" name="profile_confirmed" value="0">
+
+                        <label class="inline-flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                name="profile_confirmed"
+                                value="1"
+                                {{ old('profile_confirmed', $user->profile_confirmed) ? 'checked' : '' }}
+                                class="rounded border-gray-300"
+                            >
+                            <span class="text-xs">Yes (Profile Verified)</span>
+                        </label>
+                    </div>
+
 
                     {{-- BRANCH --}}
                     <div>

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Event;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -11,7 +12,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Shane Holmes',
+            'last_name' => 'Holmes',
+            'first_name' => 'Shane',
             'email' => 'sholmes@hbadk.org',
             'password' => Hash::make('blueline'),
             'role' => 'Super',
@@ -33,7 +35,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Shane Holmes',
+            'last_name' => 'Holmes',
+            'first_name' => 'Shane',
             'email' => 'holmesshanea@yahoo.com',
             'password' => Hash::make('blueline'),
             'role' => 'Admin',
@@ -55,7 +58,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'name' => 'Shane Holmes',
+            'last_name' => 'Holmes',
+            'first_name' => 'Shane',
             'email' => 'holmesshanea@gmail.com',
             'password' => Hash::make('blueline'),
             'role' => 'User',
@@ -73,6 +77,22 @@ class DatabaseSeeder extends Seeder
             'status_confirmed' => false,
             'image' => null,
             'email_verified_at' => now(),
+        ]);
+
+        /**
+         * RETREAT EVENT
+         */
+        Event::factory()->create([
+            'event_type' => 'retreat',
+            'title' => 'Veteran Nature Retreat',
+        ]);
+
+        /**
+         * REGULAR EVENT
+         */
+        Event::factory()->create([
+            'event_type' => 'event',
+            'title' => 'Community Outreach Event',
         ]);
     }
 }

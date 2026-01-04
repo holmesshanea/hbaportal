@@ -5,20 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
 
     /**
@@ -30,19 +20,27 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        // If role is Super or Admin → go to admin dashboard
-        if (in_array($user->role, ['Super', 'Admin'])) {
+        // Send unverified users to the notice page
+        if (method_exists($user, 'hasVerifiedEmail') && method_exists($user, 'mustVerifyEmail')) {
+            if ($user->mustVerifyEmail() && ! $user->hasVerifiedEmail()) {
+                return redirect()->route('verification.notice');
+            }
+        }
+
+        // Admins/Supers → admin dashboard
+        if (in_array($user->role, ['Super', 'Admin'], true)) {
             return redirect()->route('admin.dashboard');
         }
 
-        // Everyone else → user dashboard
-        return redirect()->route('home');
+        // Everyone else → home (or / fallback)
+        return \Illuminate\Support\Facades\Route::has('home')
+            ? redirect()->route('home')
+            : redirect('/');
     }
+
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {

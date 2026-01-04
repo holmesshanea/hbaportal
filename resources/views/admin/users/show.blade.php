@@ -16,8 +16,13 @@
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
-                        <th class="px-3 py-2 text-left font-semibold">Name</th>
-                        <td class="px-3 py-2">{{ $user->name }}</td>
+                        <th class="px-3 py-2 text-left font-semibold">Last Name</th>
+                        <td class="px-3 py-2">{{ $user->last_name }}</td>
+                    </tr>
+
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="px-3 py-2 text-left font-semibold">First Name</th>
+                        <td class="px-3 py-2">{{ $user->first_name }}</td>
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
@@ -39,6 +44,18 @@
                         <th class="px-3 py-2 text-left font-semibold">Status</th>
                         <td class="px-3 py-2">{{ $user->status }}</td>
                     </tr>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="font-semibold">Profile Confirmed:</div>
+                        <div>
+                            @if($user->profile_confirmed)
+                                <span class="text-green-600 font-semibold">Yes</span>
+                            @else
+                                <span class="text-red-600 font-semibold">No</span>
+                            @endif
+                        </div>
+                    </div>
+
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold">Gender</th>

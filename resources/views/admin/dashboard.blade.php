@@ -83,7 +83,7 @@
                                             <tr class="odd:bg-white even:bg-gray-50 dark:odd:bg-[#161615] dark:even:bg-gray-800">
                                                 <td class="px-2 py-1 border">
                                                     <a href="{{ route('admin.users.show', $user) }}" class="underline">
-                                                        {{ $user->name }}
+                                                        {{ $user->last_name }} {{ $user->first_name }}
                                                     </a>
                                                 </td>
                                                 <td class="px-2 py-1 border">{{ $user->email }}</td>

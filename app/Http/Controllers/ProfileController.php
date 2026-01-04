@@ -57,7 +57,7 @@ public function updatePassword(Request $request): RedirectResponse
     {
         $user = $request->user();
 
-        // Base validated profile fields (name, email, etc.)
+        // Base validated profile fields (first/last name, email, etc.)
         $data = $request->validated();
 
         // Handle "remove image" checkbox

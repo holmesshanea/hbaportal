@@ -9,58 +9,41 @@ use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Email Verification Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller is responsible for handling email verification for any
-    | user that recently registered with the application. Emails may also
-    | be re-sent if the user didn't receive the original email message.
-    |
-    */
-
     use VerifiesEmails;
 
     /**
      * Where to redirect users after verification.
-     *
-     * @var string
      */
-    //protected $redirectTo = '/';
+    protected function redirectTo()
+    {
+        $user = auth()->user();
+
+        // Adjust these checks to match your role system
+        if ($user && method_exists($user, 'hasAnyRole') && $user->hasAnyRole(['Admin', 'Super', 'admin', 'super'])) {
+            return '/admin';
+        }
+
+        return '/';
+    }
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * The user has been verified.
+     * This runs after successful verification in the VerifiesEmails trait.
      */
+    protected function verified(Request $request)
+    {
+        // Fire the Verified event (some versions already do this, but it’s safe)
+        event(new Verified($request->user()));
+
+        // Add a flash message for your home page/layout to show
+        return redirect($this->redirectPath())
+            ->with('status', 'email-verified');
+    }
+
     public function __construct()
     {
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
-    }
-
-    protected function redirectTo()
-    {
-        $user = auth()->user();
-
-        if ($user && method_exists($user, 'hasAnyRole') && $user->hasAnyRole(['Admin', 'Super', 'admin', 'super'])) {
-            return '/admin';
-        }
-
-        // or any “regular user” landing page you have
-        return '/';
-    }
-
-    public function verify(Request $request)
-    {
-        // ... validates signed URL, marks verified ...
-        if ($request->user()->markEmailAsVerified()) {
-            event(new Verified($request->user()));
-        }
-
-        return redirect($this->redirectPath())
-            ->with('status', 'email-verified');
     }
 }

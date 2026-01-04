@@ -31,21 +31,44 @@
             @csrf
 
             {{-- Name --}}
-            <div>
-                <label for="name" class="block text-[11px] font-medium uppercase tracking-[0.08em] text-[#52525B] dark:text-[#A1A09A]">
-                    {{ __('Name') }}
-                </label>
-                <input
-                    id="name"
-                    type="text"
-                    name="name"
-                    value="{{ old('name') }}"
-                    required
-                    autofocus
-                    class="mt-1 block w-full rounded-md border border-[#E4E4E7] bg-white px-3 py-2
-                           text-[13px] text-[#1b1b18] outline-none
-                           focus:border-[#f97316] focus:ring-1 focus:ring-[#f97316]
-                           dark:bg-[#09090b] dark:border-[#27272a] dark:text-[#EDEDE9]"
+
+            <div class="grid gap-4 md:grid-cols-2">
+                <div>
+                    <label for="last_name" class="block text-[11px] font-medium uppercase tracking-[0.08em] text-[#52525B] dark:text-[#A1A09A]">
+                        {{ __('Last Name') }}
+                    </label>
+                    <input
+                        id="last_name"
+                        type="text"
+                        name="last_name"
+                        value="{{ old('last_name') }}"
+                        required
+                        autofocus
+                        autocomplete="family-name"
+                        class="mt-1 block w-full rounded-md border border-[#E4E4E7] bg-white px-3 py-2
+                               text-[13px] text-[#1b1b18] outline-none
+                               focus:border-[#f97316] focus:ring-1 focus:ring-[#f97316]
+                               dark:bg-[#09090b] dark:border-[#27272a] dark:text-[#EDEDE9]"
+                    >
+                </div>
+
+                <div>
+                    <label for="first_name" class="block text-[11px] font-medium uppercase tracking-[0.08em] text-[#52525B] dark:text-[#A1A09A]">
+                        {{ __('First Name') }}
+                    </label>
+                    <input
+                        id="first_name"
+                        type="text"
+                        name="first_name"
+                        value="{{ old('first_name') }}"
+                        required
+                        autocomplete="given-name"
+                        class="mt-1 block w-full rounded-md border border-[#E4E4E7] bg-white px-3 py-2
+                               text-[13px] text-[#1b1b18] outline-none
+                               focus:border-[#f97316] focus:ring-1 focus:ring-[#f97316]
+                               dark:bg-[#09090b] dark:border-[#27272a] dark:text-[#EDEDE9]"
+                    >
+                </div>
                 >
             </div>
 
