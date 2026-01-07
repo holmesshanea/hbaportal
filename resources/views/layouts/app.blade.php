@@ -10,7 +10,6 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    @stack('scripts')
 </head>
 
 <body class="min-h-screen flex flex-col bg-[#F5F4ED] dark:bg-[#161615] text-[#25241f] dark:text-[#F5F4ED]">
@@ -302,6 +301,6 @@
         </nav>
     </div>
 </footer>
-
+@stack('scripts')
 </body>
 </html>

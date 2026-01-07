@@ -17,7 +17,7 @@ return new class extends Migration
                 ->default('retreat');
             $table->string('title');
             $table->text('short_description')->nullable();
-            $table->text('description')->nullable();
+            $table->longText('description')->nullable();
             $table->string('location')->nullable();
 
             $table->date('start_date')->nullable();

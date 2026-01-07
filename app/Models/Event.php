@@ -23,6 +23,11 @@ class Event extends Model
         'image',
     ];
 
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date'   => 'date',
+    ];
+
     protected $attributes = [
         'event_type' => 'retreat',
     ];

@@ -257,7 +257,9 @@ class AdminDashboardController extends Controller
      */
     public function eventsCreate()
     {
-        return view('admin.events.create');
+        return view('admin.events.create', [
+            'event' => new \App\Models\Event(),
+        ]);
     }
 
     /**

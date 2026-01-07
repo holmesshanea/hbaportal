@@ -79,20 +79,5 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        /**
-         * RETREAT EVENT
-         */
-        Event::factory()->create([
-            'event_type' => 'retreat',
-            'title' => 'Veteran Nature Retreat',
-        ]);
-
-        /**
-         * REGULAR EVENT
-         */
-        Event::factory()->create([
-            'event_type' => 'event',
-            'title' => 'Community Outreach Event',
-        ]);
-    }
+        }
 }

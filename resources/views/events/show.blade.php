@@ -216,7 +216,7 @@
                            hover:border-[oklch(52%_0.158_241.966)]
                            transition"
                 >
-                    OK / Return Home
+                    Back
                 </a>
 
                 {{-- RSVP (only if profile confirmed) --}}

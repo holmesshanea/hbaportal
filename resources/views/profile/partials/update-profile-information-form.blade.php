@@ -20,13 +20,13 @@
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
                 <x-input-label for="last_name" :value="__('Last Name')" />
-                <x-text-input id="last_name" name="last_name" type="text" class="mt-1 block w-full" :value="old('first_name', $user->first_name)" required autofocus autocomplete="given-name" />
+                <x-text-input id="last_name" name="last_name" type="text" class="mt-1 block w-full" :value="old('last_name', $user->last_name)" required autofocus autocomplete="given-name" />
                 <x-input-error class="mt-2" :messages="$errors->get('last_name')" />
             </div>
 
             <div>
                 <x-input-label for="first_name" :value="__('First Name')" />
-                <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full" :value="old('last_name', $user->last_name)" required autocomplete="family-name" />
+                <x-text-input id="first_name" name="first_name" type="text" class="mt-1 block w-full" :value="old('first_name', $user->first_name)" required autocomplete="family-name" />
                 <x-input-error class="mt-2" :messages="$errors->get('first_name')" />
             </div>
         </div>
@@ -57,43 +57,43 @@
 
         <div>
             <x-input-label for="phone" :value="__('Phone')" />
-            <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full" :value="old('phone', $user->phone)" />
+            <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full" :value="old('phone', $user->phone)"  required />
             <x-input-error class="mt-2" :messages="$errors->get('phone')" />
         </div>
 
         <div>
             <x-input-label for="emergency_contact_name" :value="__('Emergency Contact Name')" />
-            <x-text-input id="emergency_contact_name" name="emergency_contact_name" type="text" class="mt-1 block w-full" :value="old('emergency_contact_name', $user->emergency_contact_name)" />
+            <x-text-input id="emergency_contact_name" name="emergency_contact_name" type="text" class="mt-1 block w-full" :value="old('emergency_contact_name', $user->emergency_contact_name)"  required />
             <x-input-error class="mt-2" :messages="$errors->get('emergency_contact_name')" />
         </div>
 
         <div>
             <x-input-label for="emergency_contact_phone" :value="__('Emergency Contact Phone')" />
-            <x-text-input id="emergency_contact_phone" name="emergency_contact_phone" type="tel" class="mt-1 block w-full" :value="old('emergency_contact_phone', $user->emergency_contact_phone)" />
+            <x-text-input id="emergency_contact_phone" name="emergency_contact_phone" type="tel" class="mt-1 block w-full" :value="old('emergency_contact_phone', $user->emergency_contact_phone)"  required />
             <x-input-error class="mt-2" :messages="$errors->get('emergency_contact_phone')" />
         </div>
 
         <div>
             <x-input-label for="town" :value="__('Town')" />
-            <x-text-input id="town" name="town" type="text" class="mt-1 block w-full" :value="old('town', $user->town)" />
+            <x-text-input id="town" name="town" type="text" class="mt-1 block w-full" :value="old('town', $user->town)"  required />
             <x-input-error class="mt-2" :messages="$errors->get('town')" />
         </div>
 
         <div>
             <x-input-label for="state" :value="__('State')" />
-            <x-text-input id="state" name="state" type="text" class="mt-1 block w-full" :value="old('state', $user->state)" />
+            <x-text-input id="state" name="state" type="text" class="mt-1 block w-full" :value="old('state', $user->state)"  required />
             <x-input-error class="mt-2" :messages="$errors->get('state')" />
         </div>
 
         <div>
             <x-input-label for="zipcode" :value="__('Zipcode')" />
-            <x-text-input id="zipcode" name="zipcode" type="text" class="mt-1 block w-full" :value="old('zipcode', $user->zipcode)" />
+            <x-text-input id="zipcode" name="zipcode" type="text" class="mt-1 block w-full" :value="old('zipcode', $user->zipcode)"  required />
             <x-input-error class="mt-2" :messages="$errors->get('zipcode')" />
         </div>
 
         <div>
             <x-input-label for="gender" :value="__('Gender')" />
-            <select id="gender" name="gender" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600 rounded-md shadow-sm">
+            <select id="gender" name="gender" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600 rounded-md shadow-sm" required>
                 <option value="">Select Gender</option>
                 <option value="Male" {{ old('gender', $user->gender) === 'Male' ? 'selected' : '' }}>Male</option>
                 <option value="Female" {{ old('gender', $user->gender) === 'Female' ? 'selected' : '' }}>Female</option>
@@ -104,7 +104,7 @@
 
         <div>
             <x-input-label for="status" :value="__('Status')" />
-            <select id="status" name="status" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600 rounded-md shadow-sm">
+            <select id="status" name="status" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600 rounded-md shadow-sm" required>
                 <option value="">Select Status</option>
                 <option value="Veteran" {{ old('status', $user->status) === 'Veteran' ? 'selected' : '' }}>Veteran</option>
                 <option value="Staff" {{ old('status', $user->status) === 'Staff' ? 'selected' : '' }}>Staff</option>
@@ -114,7 +114,7 @@
 
         <div>
             <x-input-label for="branch" :value="__('Military Branch')" />
-            <select id="branch" name="branch" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600 rounded-md shadow-sm">
+            <select id="branch" name="branch" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-orange-500 dark:focus:border-orange-600 focus:ring-orange-500 dark:focus:ring-orange-600 rounded-md shadow-sm" required>
                 <option value="">Select Branch</option>
                 <option value="Airforce" {{ old('branch', $user->branch) === 'Airforce' ? 'selected' : '' }}>Airforce</option>
                 <option value="Airforce Reserve" {{ old('branch', $user->branch) === 'Airforce Reserve' ? 'selected' : '' }}>Airforce Reserve</option>

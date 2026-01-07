@@ -69,7 +69,7 @@
                                dark:bg-[#09090b] dark:border-[#27272a] dark:text-[#EDEDE9]"
                     >
                 </div>
-                >
+
             </div>
 
             {{-- Email --}}

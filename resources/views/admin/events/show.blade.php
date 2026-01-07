@@ -25,10 +25,26 @@
                         <td class="px-3 py-2">{{ $event->title }}</td>
                     </tr>
 
+                    {{-- Description --}}
                     <tr class="border-b border-gray-200 dark:border-gray-700">
-                        <th class="px-3 py-2 text-left font-semibold">Description</th>
-                        <td class="px-3 py-2 whitespace-pre-line">{{ $event->description }}</td>
+                        <td colspan="2" class="px-3 py-3 whitespace-pre-line">
+                            <div class="
+            [&_a]:underline
+            [&_a]:text-blue-600
+            dark:[&_a]:text-blue-400
+            [&_a:hover]:text-blue-800
+            dark:[&_a:hover]:text-blue-300
+            [&_p]:mb-2
+            [&_ul]:list-disc
+            [&_ul]:pl-5
+            [&_ol]:list-decimal
+            [&_ol]:pl-5
+        ">
+                                {!! $event->description !!}
+                            </div>
+                        </td>
                     </tr>
+
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold">Location</th>
