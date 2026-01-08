@@ -213,8 +213,9 @@
                                     View
                                 </a>
 
-                                {{-- RSVP (only if profile confirmed) --}}
-                                @if(auth()->check() && (auth()->user()->profile_confirmed || $isAdminRole))
+
+                                {{-- RSVP (only if profile confirmed and not admin/super) --}}
+                                @if(auth()->check() && auth()->user()->profile_confirmed && ! $isAdminRole)
                                     @php
                                         $status = $eventRsvpStatuses[$event->id] ?? null;
                                         $goingCount = $event->users()

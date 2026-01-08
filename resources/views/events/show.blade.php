@@ -227,7 +227,7 @@
                     @endphp
                 @endif
 
-                @if(auth()->check() && (auth()->user()->profile_confirmed || $isAdminRole))
+                @if(auth()->check() && auth()->user()->profile_confirmed && ! $isAdminRole)
                     @php
                         // Look up THIS user's RSVP status for THIS event
                         $rsvpStatus = auth()->user()
