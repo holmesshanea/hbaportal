@@ -107,7 +107,7 @@
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold">Description</th>
-                        <td class="px-3 py-2 whitespace-pre-line">{{ $event->description }}</td>
+                        <td class="px-3 py-2">{!! $event->description !!}</td>
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
@@ -322,3 +322,21 @@
         </div>
     </section>
 @endsection
+@push('styles')
+    <style>
+        .description-content a:link {
+            color: #0000ee;
+            text-decoration: underline;
+        }
+
+        .description-content a:visited {
+            color: #551a8b;
+            text-decoration: underline;
+        }
+
+        .description-content a:active {
+            color: #ee0000;
+            text-decoration: underline;
+        }
+    </style>
+@endpush
