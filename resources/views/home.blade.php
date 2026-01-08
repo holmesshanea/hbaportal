@@ -58,13 +58,18 @@
              * - Value is pivot status (going, waitlist, cancelled, etc)
              */
             $eventRsvpStatuses = [];
+            $isAdminRole = false;
 
-            if (auth()->check()) {
+           if (auth()->check()) {
+                $user = auth()->user();
+
                 // Event RSVPs for this user: [event_id => status]
-                $eventRsvpStatuses = auth()->user()
+                $eventRsvpStatuses = $user
                     ->events()
                     ->pluck('event_user.status', 'events.id')
                     ->toArray();
+
+                $isAdminRole = $user->isAdminOrSuper();
             }
 
             /**
@@ -209,7 +214,7 @@
                                 </a>
 
                                 {{-- RSVP (only if profile confirmed) --}}
-                                @if(auth()->check() && auth()->user()->profile_confirmed)
+                                @if(auth()->check() && (auth()->user()->profile_confirmed || $isAdminRole))
                                     @php
                                         $status = $eventRsvpStatuses[$event->id] ?? null;
                                         $goingCount = $event->users()

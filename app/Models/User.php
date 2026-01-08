@@ -78,6 +78,24 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimestamps();
     }
 
+    public function isAdminOrSuper(): bool
+    {
+        if (method_exists($this, 'hasAnyRole')) {
+            return $this->hasAnyRole(['admin', 'super', 'Admin', 'Super', 'super user', 'Super User']);
+        }
+
+        if (method_exists($this, 'hasRole')) {
+            return $this->hasRole('admin')
+                || $this->hasRole('super')
+                || $this->hasRole('Admin')
+                || $this->hasRole('Super');
+        }
+
+        $roleValue = strtolower(trim((string) ($this->role ?? '')));
+
+        return in_array($roleValue, ['admin', 'super', 'super user'], true);
+    }
+
 public function setFirstNameAttribute($value): void
 {
     $this->attributes['first_name'] = self::formatPersonName($value);

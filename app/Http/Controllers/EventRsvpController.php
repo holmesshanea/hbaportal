@@ -14,10 +14,9 @@ class EventRsvpController extends Controller
     public function createQuestions(Request $request, Event $event)
     {
         $user = $request->user();
-
-        //$question = Question::where('user_id', $user->id)
-        //    ->where('event_id', $event->id)
-        //    ->first();
+        if (! $user->profile_confirmed && ! $user->isAdminOrSuper()) {
+            abort(403, 'Your profile must be confirmed before you can RSVP.');
+        }
 
         // If you’re passing a desired status via querystring (optional)
         $status = $request->query('status', 'going');
@@ -27,7 +26,12 @@ class EventRsvpController extends Controller
 
     public function store(Request $request, Event $event)
     {
-        $userId = $request->user()->id;
+        $user = $request->user();
+        $userId = $user->id;
+
+        if (! $user->profile_confirmed && ! $user->isAdminOrSuper()) {
+            abort(403, 'Your profile must be confirmed before you can RSVP.');
+        }
 
         // RSVP questions validation
         // RSVP questions validation
@@ -89,7 +93,12 @@ class EventRsvpController extends Controller
 
     public function update(Request $request, Event $event)
     {
-        $userId = $request->user()->id;
+        $user = $request->user();
+        $userId = $user->id;
+
+        if (! $user->profile_confirmed && ! $user->isAdminOrSuper()) {
+            abort(403, 'Your profile must be confirmed before you can RSVP.');
+        }
 
         // Validate allowed status changes
         $data = $request->validate([
