@@ -204,9 +204,9 @@
                 toolbar: 'undo redo | bold italic underline | bullist numlist | link | removeformat',
                 branding: false,
                 content_style: `
-                    a:link { color: #0000ee; text-decoration: underline; }
-                    a:visited { color: #551a8b; text-decoration: underline; }
-                    a:active { color: #ee0000; text-decoration: underline; }
+                     a:link { color: #0000ee !important; text-decoration: underline !important; }
+                    a:visited { color: #551a8b !important; text-decoration: underline !important; }
+                    a:active { color: #ee0000 !important; text-decoration: underline !important; }
                 `
             });
         });
