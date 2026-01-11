@@ -107,7 +107,11 @@
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold">Description</th>
-                        <td class="px-3 py-2">{!! $event->description !!}</td>
+                        <td class="px-3 py-2">
+                            <div class="description-content [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">
+                                {!! $event->description !!}
+                            </div>
+                        </td>
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
