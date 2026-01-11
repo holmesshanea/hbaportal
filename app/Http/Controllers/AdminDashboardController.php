@@ -57,21 +57,49 @@ class AdminDashboardController extends Controller
      * Show the dashboard with the Users table as the active section.
      * Route: GET /admin or /admin/users → name: admin.users.index
      */
-    public function usersIndex()
+    public function usersIndex(Request $request)
     {
+        $q = trim((string) $request->query('q', ''));
+        $filter = trim((string) $request->query('filter', '')); // role
 
-        $users = User::orderBy('last_name')
+        // Dropdown options (unique roles)
+        $roleOptions = User::query()
+            ->select('role')
+            ->whereNotNull('role')
+            ->where('role', '!=', '')
+            ->distinct()
+            ->orderBy('role')
+            ->pluck('role');
+
+        $users = User::query()
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('first_name', 'like', "%{$q}%")
+                        ->orWhere('last_name', 'like', "%{$q}%")
+                        ->orWhere('email', 'like', "%{$q}%")
+                        ->orWhere('role', 'like', "%{$q}%")
+                        ->orWhere('status', 'like', "%{$q}%");
+                });
+            })
+            ->when($filter !== '', fn ($query) => $query->where('role', $filter))
+            ->orderBy('last_name')
             ->orderBy('first_name')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
         return view('admin.dashboard', [
             'section' => 'users',
-            'users'         => $users,
-            // You can optionally pass retreats/events if your view expects them
-            'retreats'      => null,
-            'events'        => null,
+            'users' => $users,
+            'events' => null,
+            'retreats' => null,
+
+            // pass dropdown options
+            'roleOptions' => $roleOptions,
+            'eventTypeOptions' => collect(), // keep defined for blade simplicity
         ]);
     }
+
+
 
     /**
      * Show the "create user" form.
@@ -239,17 +267,50 @@ class AdminDashboardController extends Controller
      * Show Events list.
      * Route: GET /admin/events → name: admin.events.index
      */
-    public function eventsIndex()
+    public function eventsIndex(Request $request)
     {
-        $events = Event::orderBy('start_date', 'desc')->paginate(15);
+        $q = trim((string) $request->query('q', ''));
+        $filter = trim((string) $request->query('filter', '')); // event_type
+
+        // Dropdown options (unique event types)
+        $eventTypeOptions = Event::query()
+            ->select('event_type')
+            ->whereNotNull('event_type')
+            ->where('event_type', '!=', '')
+            ->distinct()
+            ->orderBy('event_type')
+            ->pluck('event_type');
+
+        $events = Event::query()
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($sub) use ($q) {
+                    $sub->where('title', 'like', "%{$q}%")
+                        ->orWhere('start_date', 'like', "%{$q}%")
+                        ->orWhere('start_time', 'like', "%{$q}%")
+                        ->orWhere('location', 'like', "%{$q}%")
+                        ->orWhere('short_description', 'like', "%{$q}%")
+                        ->orWhere('description', 'like', "%{$q}%")
+                        ->orWhere('event_type', 'like', "%{$q}%");
+                });
+            })
+            ->when($filter !== '', fn ($query) => $query->where('event_type', $filter))
+            ->orderBy('start_date', 'desc')
+            ->paginate(15)
+            ->withQueryString();
 
         return view('admin.dashboard', [
             'section' => 'events',
-            'users'         => null,
-            'retreats'      => null,
-            'events'        => $events,
+            'users' => null,
+            'events' => $events,
+            'retreats' => null,
+
+            // pass dropdown options
+            'roleOptions' => collect(),
+            'eventTypeOptions' => $eventTypeOptions,
         ]);
     }
+
+
 
     /**
      * Show create Event form.

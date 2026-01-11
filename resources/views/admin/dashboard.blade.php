@@ -65,7 +65,47 @@
                         <div class="p-4">
                             {{-- USERS TABLE --}}
                             @if(($section ?? 'users') === 'users')
-                                <h2 class="text-sm font-semibold mb-2">Users</h2>
+                                <div class="flex items-center justify-between gap-3 mb-2">
+                                    <h2 class="text-sm font-semibold">Users</h2>
+
+                                <form method="GET" action="{{ route('admin.users.index') }}" class="flex items-center gap-2">
+
+                                    <select
+                                        name="filter" onchange="this.form.submit()"
+                                        class="px-2 py-1 text-xs border border-gray-300 dark:border-gray-700 rounded
+               bg-white dark:bg-[#161615] dark:text-[#EDEDEC]"
+                                    >
+                                        <option value="">All roles</option>
+                                        @foreach($roleOptions as $role)
+                                            <option value="{{ $role }}" @selected(request('filter') === $role)>{{ $role }}</option>
+                                        @endforeach
+                                    </select>
+                                    <input
+                                        type="text"
+                                        name="q"
+                                        value="{{ request('q') }}"
+                                        placeholder="Search users..."
+                                        class="w-56 px-2 py-1 text-xs border border-gray-300 dark:border-gray-700 rounded
+                       bg-white dark:bg-[#161615] dark:text-[#EDEDEC]"
+                                    />
+
+                                    <button
+                                        type="submit"
+                                        class="px-3 py-1 text-xs border rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+                                    >
+                                        Search
+                                    </button>
+
+                                    @if(request()->filled('q'))
+                                        <a
+                                            href="{{ route('admin.users.index') }}"
+                                            class="px-2 py-1 text-xs underline text-gray-600 dark:text-gray-300"
+                                        >
+                                            Clear
+                                        </a>
+                                    @endif
+                                </form>
+                        </div>
 
                                 <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded">
                                     <table class="min-w-full text-xs border-collapse">
@@ -115,14 +155,54 @@
                                 </div>
 
                                 @if(isset($users) && method_exists($users, 'links'))
-                                    <div class="mt-3">{{ $users->links() }}</div>
+                                    <div class="mt-3">{{ $users->withQueryString()->links() }}</div>
                                 @endif
                             @endif
 
 
                             {{-- EVENTS TABLE --}}
                             @if(($section ?? '') === 'events')
-                                <h2 class="text-sm font-semibold mb-2">Events</h2>
+                                <div class="flex items-center justify-between gap-3 mb-2">
+                                    <h2 class="text-sm font-semibold">Events</h2>
+
+                                    <form method="GET" action="{{ route('admin.events.index') }}" class="flex items-center gap-2">
+
+                                        <select
+                                            name="filter" onchange="this.form.submit()"
+                                            class="px-2 py-1 text-xs border border-gray-300 dark:border-gray-700 rounded
+               bg-white dark:bg-[#161615] dark:text-[#EDEDEC]"
+                                        >
+                                            <option value="">All types</option>
+                                            @foreach($eventTypeOptions as $type)
+                                                <option value="{{ $type }}" @selected(request('filter') === $type)>{{ $type }}</option>
+                                            @endforeach
+                                        </select>
+                                        <input
+                                            type="text"
+                                            name="q"
+                                            value="{{ request('q') }}"
+                                            placeholder="Search events..."
+                                            class="w-56 px-2 py-1 text-xs border border-gray-300 dark:border-gray-700 rounded
+                       bg-white dark:bg-[#161615] dark:text-[#EDEDEC]"
+                                        />
+
+                                        <button
+                                            type="submit"
+                                            class="px-3 py-1 text-xs border rounded bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+                                        >
+                                            Search
+                                        </button>
+
+                                        @if(request()->filled('q'))
+                                            <a
+                                                href="{{ route('admin.events.index') }}"
+                                                class="px-2 py-1 text-xs underline text-gray-600 dark:text-gray-300"
+                                            >
+                                                Clear
+                                            </a>
+                                        @endif
+                                    </form>
+                                </div>
 
                                 <div class="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded">
                                     <table class="min-w-full text-xs border-collapse">
@@ -142,7 +222,7 @@
                                                         {{ $event->title }}
                                                     </a>
                                                 </td>
-                                                <td class="px-2 py-1 border">{{ $event->date }}</td>
+                                                <td class="px-2 py-1 border">{{ $event->start_date }}</td>
                                                 <td class="px-2 py-1 border">
                                                     {{ $event->start_time ?? '—' }}
                                                 </td>
@@ -174,7 +254,7 @@
                                 </div>
 
                                 @if(isset($events) && method_exists($events, 'links'))
-                                    <div class="mt-3">{{ $events->links() }}</div>
+                                    <div class="mt-3">{{ $events->withQueryString()->links() }}</div>
                                 @endif
                             @endif
                         </div>
