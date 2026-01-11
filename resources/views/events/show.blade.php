@@ -108,7 +108,18 @@
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold">Description</th>
                         <td class="px-3 py-2">
-                            <div class="description-content [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">
+                            <div class="
+                                [&_a]:underline
+                                [&_a]:text-blue-600
+                                dark:[&_a]:text-blue-400
+                                [&_a:hover]:text-blue-800
+                                dark:[&_a:hover]:text-blue-300
+                                [&_p]:mb-2
+                                [&_ul]:list-disc
+                                [&_ul]:pl-5
+                                [&_ol]:list-decimal
+                                [&_ol]:pl-5
+                            ">
                                 {!! $event->description !!}
                             </div>
                         </td>
@@ -326,21 +337,4 @@
         </div>
     </section>
 @endsection
-@push('styles')
-    <style>
-        .description-content a:link {
-            color: #0000ee;
-            text-decoration: underline;
-        }
 
-        .description-content a:visited {
-            color: #551a8b;
-            text-decoration: underline;
-        }
-
-        .description-content a:active {
-            color: #ee0000;
-            text-decoration: underline;
-        }
-    </style>
-@endpush
