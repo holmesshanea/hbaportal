@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AccountVerified;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class VerificationController extends Controller
 {
@@ -34,6 +36,9 @@ class VerificationController extends Controller
     {
         // Fire the Verified event (some versions already do this, but it’s safe)
         event(new Verified($request->user()));
+
+        $user = $request->user();
+        Mail::to($user->email)->send(new AccountVerified($user));
 
         // Add a flash message for your home page/layout to show
         return redirect($this->redirectPath())
