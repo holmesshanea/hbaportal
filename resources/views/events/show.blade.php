@@ -49,6 +49,24 @@
                 $mapsEmbed = $mapsQuery ? "https://www.google.com/maps?q={$mapsQuery}&output=embed" : null;
             @endphp
 
+            @if(session('success'))
+                <div class="mt-4 inline-flex items-center rounded border border-green-200 bg-green-50 px-4 py-2 text-green-800 text-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('profile-incomplete'))
+                <div class="mt-4 inline-flex items-center rounded border border-amber-200 bg-amber-50 px-4 py-2 text-amber-800 text-sm">
+                    {{ session('profile-incomplete') }}
+                </div>
+            @endif
+
+            @if($errors->has('status'))
+                <div class="mt-4 inline-flex items-center rounded border border-red-200 bg-red-50 px-4 py-2 text-red-800 text-sm">
+                    {{ $errors->first('status') }}
+                </div>
+            @endif
+
             <h1 class="text-base font-semibold mb-4 flex items-center justify-between gap-3">
                 <span>Event Details</span>
 
@@ -206,24 +224,6 @@
                     </tbody>
                 </table>
             </div>
-
-            @if(session('success'))
-                <div class="mt-4 inline-flex items-center rounded border border-green-200 bg-green-50 px-4 py-2 text-green-800 text-sm">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if(session('profile-incomplete'))
-                <div class="mt-4 inline-flex items-center rounded border border-amber-200 bg-amber-50 px-4 py-2 text-amber-800 text-sm">
-                    {{ session('profile-incomplete') }}
-                </div>
-            @endif
-
-            @if($errors->has('status'))
-                <div class="mt-4 inline-flex items-center rounded border border-red-200 bg-red-50 px-4 py-2 text-red-800 text-sm">
-                    {{ $errors->first('status') }}
-                </div>
-            @endif
 
             <div class="mt-4 flex items-center gap-2">
                 {{-- OK / Return Home --}}
