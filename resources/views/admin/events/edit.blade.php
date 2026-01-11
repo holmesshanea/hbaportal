@@ -10,7 +10,7 @@
                 $labelClasses = 'inline-block mb-1 px-2 py-1 rounded text-xs font-bold bg-emerald-600 text-white';
             @endphp
 
-            <h1 class="text-base font-semibold mb-4">Edit event</h1>
+            <h1 class="text-base font-semibold mb-4">Edit Event</h1>
 
             @if ($errors->any())
                 <div class="mb-4 border border-red-300 bg-red-50 text-red-800 text-xs p-3 rounded">

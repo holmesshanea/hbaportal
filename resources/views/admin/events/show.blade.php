@@ -5,7 +5,7 @@
 @section('content')
     <section class="bg-white dark:bg-[#161615] dark:text-[#EDEDEC] rounded-lg p-6 lg:p-10 text-[13px] leading-[20px]">
         <div class="max-w-2xl mx-auto">
-            <h1 class="text-base font-semibold mb-4">event Details</h1>
+            <h1 class="text-base font-semibold mb-4">Event Details</h1>
 
             <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden text-xs">
                 <table class="min-w-full">

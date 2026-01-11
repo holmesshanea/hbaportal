@@ -13,6 +13,9 @@
             <div class="mt-1 text-sm font-normal text-emerald-800">
                 You now have full access to the HBA Portal.
             </div>
+            <div class="mt-1 text-sm font-normal text-emerald-800">
+                Please complete you rprofile in order to RSVP to an event or retreat!
+            </div>
         </div>
     @endif
 
