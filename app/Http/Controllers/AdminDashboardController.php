@@ -155,6 +155,11 @@ class AdminDashboardController extends Controller
      */
     public function usersShow(User $user)
     {
+        $user->load([
+            'events' => fn ($query) => $query
+                ->orderBy('start_date', 'desc')
+                ->orderBy('title'),
+        ]);
         return view('admin.users.show', compact('user'));
     }
 
@@ -365,6 +370,11 @@ class AdminDashboardController extends Controller
      */
     public function eventsShow(Event $event)
     {
+        $event->load([
+            'users' => fn ($query) => $query
+                ->orderBy('last_name')
+                ->orderBy('first_name'),
+        ]);
         return view('admin.events.show', compact('event'));
     }
 

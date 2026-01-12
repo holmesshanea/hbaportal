@@ -14,7 +14,7 @@
                 You now have full access to the HBA Portal.
             </div>
             <div class="mt-1 text-sm font-normal text-emerald-800">
-                Please complete you rprofile in order to RSVP to an event or retreat!
+                Please complete your profile in order to RSVP to an event or retreat!
             </div>
         </div>
     @endif
@@ -41,6 +41,12 @@
             for any other purpose. For additional details regarding site usage and data collection, please review
             our <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.
         </p>
+
+        @if (session('status') === 'email-verified')
+            <div class="mt-1 text-sm font-normal text-emerald-800">
+                Please complete your profile in order to RSVP to an event or retreat!
+            </div>
+        @endif
 
         @if(session('success'))
             <div class="mb-4 inline-flex items-center rounded border border-green-200 bg-green-50 px-4 py-2 text-green-800 text-sm">

@@ -143,9 +143,32 @@
                     Edit User
                 </a>
 
-                <a href="{{ route('admin.users.index') }}" class="text-xs underline">
-                    Back to Users
+                <a href="{{ route('admin.users.index') }}"
+                   class="px-4 py-2 text-xs rounded border bg-green-600 text-white">
+                    Back
                 </a>
+            </div>
+            <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
+                <h2 class="text-sm font-semibold mb-3">RSVP’d Events</h2>
+
+                @if($user->events->isEmpty())
+                    <p class="text-xs text-gray-500">No RSVP’d events yet.</p>
+                @else
+                    <ul class="space-y-2 text-xs">
+                        @foreach($user->events as $event)
+                            <li class="flex flex-wrap items-center gap-2">
+                                <a href="{{ route('admin.events.show', $event) }}"
+                                   class="text-blue-600 underline hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                    {{ $event->title }}
+                                </a>
+                                <span class="text-gray-500">•</span>
+                                <span>{{ $event->start_date }}</span>
+                                <span class="text-gray-500">•</span>
+                                <span>{{ ucfirst($event->event_type ?? 'retreat') }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
             </div>
         </div>
     </section>
