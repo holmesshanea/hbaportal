@@ -124,7 +124,19 @@
                     @php
                         $typeKey = strtolower($event->event_type ?? 'event');
                         $typeMeta = $eventTypeStyles[$typeKey] ?? $eventTypeStyles['default'];
-
+                        $statusKey = strtolower($event->status ?? 'open');
+                        $statusMeta = [
+                            'open' => [
+                                'label' => 'Open',
+                                'badge' => 'bg-emerald-100 text-emerald-900 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:border-emerald-800',
+                            ],
+                            'closed' => [
+                                'label' => 'Closed',
+                                'badge' => 'bg-gray-200 text-gray-800 border-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700',
+                            ],
+                        ];
+                        $statusStyle = $statusMeta[$statusKey] ?? $statusMeta['open'];
+                        $isClosed = $statusKey === 'closed';
                         // Prefer start_date if your model has it, otherwise fall back to date
                         $displayDate = $event->start_date ?? $event->date ?? null;
                     @endphp
@@ -159,6 +171,14 @@
                                 >
                                     <span aria-hidden="true">{{ $typeMeta['icon'] }}</span>
                                     <span>{{ $typeMeta['label'] }}</span>
+                                </span>
+                                <span
+                                    class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide {{ $statusStyle['badge'] }}"
+                                    role="note"
+                                    aria-label="Status: {{ $statusStyle['label'] }}"
+                                    title="{{ $statusStyle['label'] }}"
+                                >
+                                    {{ $statusStyle['label'] }}
                                 </span>
 
                                 {{-- Optional subtle helper text for screen readers (keeps accessibility strong even without color) --}}
@@ -276,7 +296,7 @@
                                                 disabled
                                                 class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-gray-200 px-3 py-1.5 text-[11px] font-medium text-gray-700 cursor-not-allowed"
                                             >
-                                                Waiting for an open spot
+                                                {{ $isClosed ? 'Event closed' : 'Waiting for an open spot' }}
                                             </button>
                                         @endif
 
@@ -295,17 +315,23 @@
                                         </form>
 
                                     @else
-                                        <form method="GET" action="{{ route('events.rsvp.questions', $event) }}">
-                                            <input type="hidden" name="status" value="going">
-                                            <button
-                                                type="submit"
-                                                class="inline-flex items-center justify-center rounded-md border border-green-600
-                                                       bg-green-600 px-3 py-1.5 text-[11px] font-medium text-white
-                                                       hover:bg-green-700 hover:border-green-700 transition"
-                                            >
-                                                RSVP
-                                            </button>
-                                        </form>
+                                        @if($isClosed)
+                                            <span class="inline-flex items-center justify-center rounded-md border border-gray-300 bg-gray-200 px-3 py-1.5 text-[11px] font-medium text-gray-700">
+                                                Event closed
+                                            </span>
+                                        @else
+                                            <form method="GET" action="{{ route('events.rsvp.questions', $event) }}">
+                                                <input type="hidden" name="status" value="going">
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex items-center justify-center rounded-md border border-green-600
+                                                           bg-green-600 px-3 py-1.5 text-[11px] font-medium text-white
+                                                           hover:bg-green-700 hover:border-green-700 transition"
+                                                >
+                                                    RSVP
+                                                </button>
+                                            </form>
+                                        @endif
                                     @endif
                                 @endif
                             </div>

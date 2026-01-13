@@ -18,6 +18,12 @@ class EventRsvpController extends Controller
             abort(403, 'Your profile must be confirmed before you can RSVP.');
         }
 
+        if ($event->status === Event::STATUS_CLOSED) {
+            return redirect()
+                ->route('home')
+                ->withErrors(['status' => 'This event is closed.']);
+        }
+
         // If you’re passing a desired status via querystring (optional)
         $status = $request->query('status', 'going');
 
@@ -33,8 +39,14 @@ class EventRsvpController extends Controller
             abort(403, 'Your profile must be confirmed before you can RSVP.');
         }
 
+        if ($event->status === Event::STATUS_CLOSED) {
+            return redirect()
+                ->route('home')
+                ->withErrors(['status' => 'This event is closed.']);
+        }
+
         // RSVP questions validation
-        // RSVP questions validation
+
         $data = $request->validate(
             [
                 'expect'    => ['required', 'string'],
@@ -86,6 +98,8 @@ class EventRsvpController extends Controller
             ],
         ]);
 
+        $event->closeIfFull();
+
         return redirect()
             ->route('home')
             ->with('success', 'You are RSVP’d for this event.');
@@ -104,6 +118,13 @@ class EventRsvpController extends Controller
         $data = $request->validate([
             'status' => 'required|in:going,not_going,waitlist,cancelled',
         ]);
+
+        if (
+            $event->status === Event::STATUS_CLOSED
+            && in_array($data['status'], ['going', 'waitlist'], true)
+        ) {
+            return back()->withErrors(['status' => 'This event is closed.']);
+        }
 
         // Make sure the user already has an RSVP
         if (! $event->users()->where('user_id', $userId)->exists()) {
@@ -133,6 +154,10 @@ class EventRsvpController extends Controller
             'status'    => $data['status'],
             'rsvped_at' => now(),
         ]);
+
+        if ($data['status'] === 'going') {
+            $event->closeIfFull();
+        }
 
         return back()->with('success', 'Your RSVP has been updated.');
     }

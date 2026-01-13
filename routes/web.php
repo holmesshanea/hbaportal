@@ -48,6 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/events/{event}', [AdminDashboardController::class, 'eventsShow'])->name('events.show');
         Route::get('/events/{event}/edit', [AdminDashboardController::class, 'eventsEdit'])->name('events.edit');
         Route::put('/events/{event}', [AdminDashboardController::class, 'eventsUpdate'])->name('events.update');
+        Route::patch('/events/{event}/close', [AdminDashboardController::class, 'eventsClose'])->name('events.close');
         Route::delete('/events/{event}', [AdminDashboardController::class, 'eventsDestroy'])->name('events.destroy');
     });
 

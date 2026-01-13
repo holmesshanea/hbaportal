@@ -36,6 +36,19 @@
                 $typeKey = strtolower($event->event_type ?? 'event');
                 $typeMeta = $eventTypeStyles[$typeKey] ?? $eventTypeStyles['default'];
 
+                 $statusKey = strtolower($event->status ?? 'open');
+                $statusMeta = [
+                    'open' => [
+                        'label' => 'Open',
+                        'badge' => 'bg-emerald-100 text-emerald-900 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-200 dark:border-emerald-800',
+                    ],
+                    'closed' => [
+                        'label' => 'Closed',
+                        'badge' => 'bg-gray-200 text-gray-800 border-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700',
+                    ],
+                ];
+                $statusStyle = $statusMeta[$statusKey] ?? $statusMeta['open'];
+
                 // Date handling (supports either start_date/end_date OR date)
                 $startDateValue = $event->start_date ?? $event->date ?? null;
                 $endDateValue   = $event->end_date ?? null;
@@ -69,17 +82,28 @@
 
             <h1 class="text-base font-semibold mb-4 flex items-center justify-between gap-3">
                 <span>Event Details</span>
+                <div class="flex flex-wrap items-center gap-2">
+                    {{-- Type badge (icon + text + color) --}}
+                    <span
+                        class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide {{ $typeMeta['badge'] }}"
+                        role="note"
+                        aria-label="Type: {{ $typeMeta['label'] }}"
+                        title="{{ $typeMeta['label'] }}"
+                    >
+                        <span aria-hidden="true">{{ $typeMeta['icon'] }}</span>
+                        <span>{{ $typeMeta['label'] }}</span>
+                    </span>
 
-                {{-- Type badge (icon + text + color) --}}
-                <span
-                    class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide {{ $typeMeta['badge'] }}"
-                    role="note"
-                    aria-label="Type: {{ $typeMeta['label'] }}"
-                    title="{{ $typeMeta['label'] }}"
-                >
-                    <span aria-hidden="true">{{ $typeMeta['icon'] }}</span>
-                    <span>{{ $typeMeta['label'] }}</span>
-                </span>
+                    <span
+                        class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide {{ $statusStyle['badge'] }}"
+                        role="note"
+                        aria-label="Status: {{ $statusStyle['label'] }}"
+                        title="{{ $statusStyle['label'] }}"
+                    >
+                        {{ $statusStyle['label'] }}
+                    </span>
+                </div>
+
             </h1>
 
             <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden text-xs border-l-4 {{ $typeMeta['accent'] }}">
@@ -100,21 +124,6 @@
                             </td>
                         </tr>
                     @endif
-
-                    <tr class="border-b border-gray-200 dark:border-gray-700">
-                        <th class="px-3 py-2 text-left font-semibold">Type</th>
-                        <td class="px-3 py-2">
-                            <span
-                                class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide {{ $typeMeta['badge'] }}"
-                                role="note"
-                                aria-label="Type: {{ $typeMeta['label'] }}"
-                                title="{{ $typeMeta['label'] }}"
-                            >
-                                <span aria-hidden="true">{{ $typeMeta['icon'] }}</span>
-                                <span>{{ $typeMeta['label'] }}</span>
-                            </span>
-                        </td>
-                    </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold">Title</th>
@@ -343,4 +352,3 @@
         </div>
     </section>
 @endsection
-

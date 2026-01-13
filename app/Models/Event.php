@@ -9,8 +9,12 @@ class Event extends Model
 {
     use HasFactory;
 
+    public const STATUS_OPEN = 'open';
+    public const STATUS_CLOSED = 'closed';
+
     protected $fillable = [
         'event_type',
+        'status',
         'title',
         'short_description',
         'description',
@@ -30,9 +34,10 @@ class Event extends Model
 
     protected $attributes = [
         'event_type' => 'retreat',
+        'status' => self::STATUS_OPEN,
     ];
 
-     public function users()
+    public function users()
     {
         return $this->belongsToMany(\App\Models\User::class)
             ->withPivot(['status', 'rsvped_at'])
@@ -63,6 +68,25 @@ class Event extends Model
             fn ($m) => mb_strtoupper($m[0], 'UTF-8'),
             $value
         );
+    }
+
+    public function closeIfFull(): bool
+    {
+        if ($this->status === self::STATUS_CLOSED || is_null($this->capacity)) {
+            return false;
+        }
+
+        $goingCount = $this->users()
+            ->wherePivot('status', 'going')
+            ->count();
+
+        if ($goingCount >= $this->capacity) {
+            $this->update(['status' => self::STATUS_CLOSED]);
+
+            return true;
+        }
+
+        return false;
     }
 
 

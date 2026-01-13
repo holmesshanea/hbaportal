@@ -426,6 +426,21 @@ class AdminDashboardController extends Controller
             ->with('status', 'Event updated successfully.');
     }
 
+    /**
+     * Close an Event.
+     * Route: PATCH /admin/events/{event}/close → name: admin.events.close
+     */
+    public function eventsClose(Event $event)
+    {
+        if ($event->status !== Event::STATUS_CLOSED) {
+            $event->update(['status' => Event::STATUS_CLOSED]);
+        }
+
+        return redirect()
+            ->route('admin.events.show', $event)
+            ->with('status', 'Event closed successfully.');
+    }
+
 
     /**
      * Delete an Event.

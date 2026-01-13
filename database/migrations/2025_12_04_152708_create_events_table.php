@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->enum('event_type', ['retreat', 'event'])
                 ->default('retreat');
+            $table->enum('status', ['open', 'closed'])
+                ->default('open');
             $table->string('title');
             $table->text('short_description')->nullable();
             $table->longText('description')->nullable();

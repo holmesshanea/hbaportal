@@ -21,6 +21,11 @@
                     </tr>
 
                     <tr class="border-b border-gray-200 dark:border-gray-700">
+                        <th class="px-3 py-2 text-left font-semibold">Status</th>
+                        <td class="px-3 py-2">{{ ucfirst($event->status ?? 'open') }}</td>
+                    </tr>
+
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
                         <th class="px-3 py-2 text-left font-semibold">Title</th>
                         <td class="px-3 py-2">{{ $event->title }}</td>
                     </tr>
@@ -111,6 +116,19 @@
                    class="px-4 py-2 text-xs rounded border bg-blue-600 text-white">
                     Edit event
                 </a>
+                @if(($event->status ?? 'open') === 'open')
+                    <form method="POST" action="{{ route('admin.events.close', $event) }}">
+                        @csrf
+                        @method('PATCH')
+                        <button
+                            type="submit"
+                            class="px-4 py-2 text-xs rounded border bg-amber-600 text-white"
+                        >
+                            Close event
+                        </button>
+                    </form>
+                @endif
+
 
                 <a href="{{ route('admin.events.index') }}"
                    class="px-4 py-2 text-xs rounded border bg-green-600 text-white">
